@@ -1,9 +1,17 @@
 import { Header } from './_components/header';
+import { Hero } from './_components/hero';
+import { Professionals } from './_components/professionals';
 
 export default function HomePage() {
   return (
-    <main>
+    <div className='flex flex-col min-h-screen'>
       <Header />
-    </main>
+
+      <div>
+        <Hero />
+
+        <Professionals />
+      </div>
+    </div>
   );
 }
