@@ -1,3 +1,5 @@
+import { SidebarDashboard } from './_components/sidebar';
+
 export default function DashbordLayout({
   children,
 }: {
@@ -5,9 +7,7 @@ export default function DashbordLayout({
 }) {
   return (
     <>
-      {children}
-
-      <h1>SIDEBAR</h1>
+      <SidebarDashboard>{children}</SidebarDashboard>
     </>
   );
 }
