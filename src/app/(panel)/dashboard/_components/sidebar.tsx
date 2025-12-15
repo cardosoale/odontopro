@@ -34,8 +34,6 @@ export function SidebarDashboard({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  console.log(pathname);
-
   return (
     <div className='flex min-h-screen w-full'>
       <aside
@@ -123,7 +121,12 @@ export function SidebarDashboard({ children }: { children: React.ReactNode }) {
           <Sheet>
             <div className='flex items-center gap-4'>
               <SheetTrigger asChild>
-                <Button variant={'outline'} size={'icon'} className='md:hidden'>
+                <Button
+                  variant={'outline'}
+                  size={'icon'}
+                  onClick={() => setIsCollapsed(false)}
+                  className='md:hidden '
+                >
                   <ListIcon className=' w-5 h-5' />
                 </Button>
               </SheetTrigger>
@@ -133,41 +136,40 @@ export function SidebarDashboard({ children }: { children: React.ReactNode }) {
             </div>
             <SheetContent side='left' className='sm:max-w-xs text-black'>
               <SheetTitle>OdontoPRO</SheetTitle>
-              <SheetDescription>
-                <nav className='grid gap-2 text-base pt-5'>
-                  <SideBarLink
-                    href='/dashboard'
-                    label='Agendamentos'
-                    pathname={pathname}
-                    iscollapsed={isCollapsed}
-                    icon={<CalendarCheck2Icon />}
-                  />
+              <SheetDescription>Menu de navegação</SheetDescription>
+              <nav className='grid gap-2 text-base pt-5'>
+                <SideBarLink
+                  href='/dashboard'
+                  label='Agendamentos'
+                  pathname={pathname}
+                  iscollapsed={isCollapsed}
+                  icon={<CalendarCheck2Icon />}
+                />
 
-                  <SideBarLink
-                    href='/dashboard/services'
-                    label='Serviços'
-                    pathname={pathname}
-                    iscollapsed={isCollapsed}
-                    icon={<FolderCog2Icon />}
-                  />
+                <SideBarLink
+                  href='/dashboard/services'
+                  label='Serviços'
+                  pathname={pathname}
+                  iscollapsed={isCollapsed}
+                  icon={<FolderCog2Icon />}
+                />
 
-                  <SideBarLink
-                    href='/dashboard/profile'
-                    label='Meu Perfil'
-                    pathname={pathname}
-                    iscollapsed={isCollapsed}
-                    icon={<Settings2Icon />}
-                  />
+                <SideBarLink
+                  href='/dashboard/profile'
+                  label='Meu Perfil'
+                  pathname={pathname}
+                  iscollapsed={isCollapsed}
+                  icon={<Settings2Icon />}
+                />
 
-                  <SideBarLink
-                    href='/dashboard/plans'
-                    label='Planos'
-                    pathname={pathname}
-                    iscollapsed={isCollapsed}
-                    icon={<Banknote />}
-                  />
-                </nav>
-              </SheetDescription>
+                <SideBarLink
+                  href='/dashboard/plans'
+                  label='Planos'
+                  pathname={pathname}
+                  iscollapsed={isCollapsed}
+                  icon={<Banknote />}
+                />
+              </nav>
             </SheetContent>
           </Sheet>
         </header>
