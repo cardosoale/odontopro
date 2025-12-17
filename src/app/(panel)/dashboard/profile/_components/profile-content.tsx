@@ -21,11 +21,49 @@ import {
 } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import Image from 'next/image';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 
 import ImgTest from '@/../public/foto1.png';
+import { ArrowRightIcon } from 'lucide-react';
+import { useState } from 'react';
+import { cn } from '@/lib/utils';
 
 export function ProfileContent() {
   const form = useProfileForm();
+
+  function generateTimeSlot(): string[] {
+    const hours: string[] = [];
+    for (let i = 7; i < 19; i++) {
+      for (let j = 0; j < 2; j++) {
+        const min = (j * 30).toString().padStart(2, '0');
+        const hour = i.toString().padStart(2, '0');
+        hours.push(`${hour}:${min}`);
+      }
+    }
+    return hours;
+  }
+
+  const hours = generateTimeSlot();
+
+  const [selectHours, setSelectHours] = useState<string[]>([]);
+
+  function toogleHour(hour: string) {
+    setSelectHours((prev) =>
+      prev.includes(hour)
+        ? prev.filter((h) => h !== hour)
+        : [...prev, hour].sort()
+    );
+  }
 
   return (
     <div className='mx-auto'>
@@ -62,6 +100,7 @@ export function ProfileContent() {
                           placeholder='Digite seu nome completo'
                         />
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -82,6 +121,7 @@ export function ProfileContent() {
                           placeholder='Digite seu endereço completo'
                         />
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -100,6 +140,7 @@ export function ProfileContent() {
                           placeholder='Digite seu telefone com DDD'
                         />
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -133,6 +174,53 @@ export function ProfileContent() {
                     </FormItem>
                   )}
                 />
+                <div className='space-y-4'>
+                  <Label className='font-semibold'>
+                    Configurar horários de funcionamento da clínica
+                  </Label>
+
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant={'outline'}
+                        className='w-full justify-between'
+                      >
+                        Clique aqui para selecionar os horários de funcionamento
+                        da clínica <ArrowRightIcon className='w-5 h-5' />
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Horários da Clínica</DialogTitle>
+                        <DialogDescription>
+                          Selecione aqui os horários de funcionamento da clínica
+                        </DialogDescription>
+                      </DialogHeader>
+
+                      <section className='py-4'>
+                        <p className='text-sm text-muted-foreground mb-2'>
+                          Selecione dentre os horários abaixo:
+                        </p>
+                        <div className='grid grid-cols-4 gap-2'>
+                          {hours.map((hour) => (
+                            <Button
+                              variant={'outline'}
+                              key={hour}
+                              onClick={() => toogleHour(hour)}
+                              className={cn(
+                                'h-10',
+                                selectHours.includes(hour) &&
+                                  'border-2 border-emerald-500 text-primary'
+                              )}
+                            >
+                              {hour}
+                            </Button>
+                          ))}
+                        </div>
+                      </section>
+                    </DialogContent>
+                  </Dialog>
+                </div>
               </div>
             </CardContent>
           </Card>

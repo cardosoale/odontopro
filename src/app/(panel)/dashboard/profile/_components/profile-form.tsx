@@ -7,7 +7,7 @@ const profileSchema = z.object({
   address: z.string().optional(),
   phone: z.string().optional(),
   status: z.string(),
-  timeZone: z.string().min(1, { message: 'O tomezone é obrigatório' }),
+  timeZone: z.string().min(1, { message: 'O timezone é obrigatório' }),
 });
 
 type ProfileSchemaData = z.infer<typeof profileSchema>;
