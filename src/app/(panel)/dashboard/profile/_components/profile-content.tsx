@@ -40,6 +40,20 @@ import { cn } from '@/lib/utils';
 
 export function ProfileContent() {
   const form = useProfileForm();
+  const timeZones = Intl.supportedValuesOf('timeZone').filter(
+    (zone) =>
+      zone.startsWith('America/Sao_Paulo') ||
+      zone.startsWith('America/Fortaleza') ||
+      zone.startsWith('America/Recife') ||
+      zone.startsWith('America/Bahia') ||
+      zone.startsWith('America/Belem') ||
+      zone.startsWith('America/Manaus') ||
+      zone.startsWith('America/Cuiaba') ||
+      zone.startsWith('America/Boa_Vista')
+  );
+
+  const [selectHours, setSelectHours] = useState<string[]>([]);
+  const [dialogIsOpen, setDialogIsOpen] = useState(false);
 
   function generateTimeSlot(): string[] {
     const hours: string[] = [];
@@ -54,8 +68,6 @@ export function ProfileContent() {
   }
 
   const hours = generateTimeSlot();
-
-  const [selectHours, setSelectHours] = useState<string[]>([]);
 
   function toogleHour(hour: string) {
     setSelectHours((prev) =>
@@ -158,7 +170,7 @@ export function ProfileContent() {
                           onValueChange={field.onChange}
                           defaultValue={field.value ? 'active' : 'deactive'}
                         >
-                          <SelectTrigger>
+                          <SelectTrigger className='w-full'>
                             <SelectValue placeholder='Selecione o status' />
                           </SelectTrigger>
                           <SelectContent>
@@ -179,7 +191,7 @@ export function ProfileContent() {
                     Configurar horários de funcionamento da clínica
                   </Label>
 
-                  <Dialog>
+                  <Dialog open={dialogIsOpen} onOpenChange={setDialogIsOpen}>
                     <DialogTrigger asChild>
                       <Button
                         variant={'outline'}
@@ -218,9 +230,49 @@ export function ProfileContent() {
                           ))}
                         </div>
                       </section>
+                      <Button
+                        className='bg-emerald-500 text-white w-full hover:bg-emerald-400'
+                        onClick={() => setDialogIsOpen(false)}
+                      >
+                        Salvar e Sair
+                      </Button>
                     </DialogContent>
                   </Dialog>
                 </div>
+                <FormField
+                  control={form.control}
+                  name='timeZone'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className='font-semibold'>
+                        Fuso Horário
+                      </FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <SelectTrigger className='w-full'>
+                            <SelectValue placeholder='Selecione seu fuso horário' />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {timeZones.map((zone) => (
+                              <SelectItem key={zone} value={zone}>
+                                {zone}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <Button
+                  className='w-full bg-emerald-500 hover:bg-emerald-400'
+                  type='submit'
+                >
+                  Salvar alterações
+                </Button>
               </div>
             </CardContent>
           </Card>
