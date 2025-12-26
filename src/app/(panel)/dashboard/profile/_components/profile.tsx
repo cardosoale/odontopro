@@ -1,6 +1,6 @@
 'use client';
 
-import { useProfileForm } from './profile-form';
+import { ProfileFormData, useProfileForm } from './profile-form';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Form,
@@ -37,9 +37,31 @@ import ImgTest from '@/../public/foto1.png';
 import { ArrowRightIcon } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
+import { Prisma } from '@/generated/prisma/client';
+import { updateProfile } from '../_actions/update-profile';
 
-export function ProfileContent() {
-  const form = useProfileForm();
+type UserWithSubscription = Prisma.UserGetPayload<{
+  include: {
+    subscription: true;
+  };
+}>;
+
+interface ProfileContentProps {
+  user: UserWithSubscription;
+}
+
+export function ProfileContent({ user }: ProfileContentProps) {
+  const [selectHours, setSelectHours] = useState<string[]>(user.times || []);
+  const [dialogIsOpen, setDialogIsOpen] = useState(false);
+
+  const form = useProfileForm({
+    name: user.name,
+    address: user.address,
+    phone: user.phone,
+    status: user.status,
+    timeZone: user.timeZone,
+  });
+
   const timeZones = Intl.supportedValuesOf('timeZone').filter(
     (zone) =>
       zone.startsWith('America/Sao_Paulo') ||
@@ -51,9 +73,6 @@ export function ProfileContent() {
       zone.startsWith('America/Cuiaba') ||
       zone.startsWith('America/Boa_Vista')
   );
-
-  const [selectHours, setSelectHours] = useState<string[]>([]);
-  const [dialogIsOpen, setDialogIsOpen] = useState(false);
 
   function generateTimeSlot(): string[] {
     const hours: string[] = [];
@@ -77,10 +96,23 @@ export function ProfileContent() {
     );
   }
 
+  async function submit(values: ProfileFormData) {
+    const response = await updateProfile({
+      name: values.name,
+      address: values.address,
+      status: values.status === 'active' ? true : false,
+      phone: values.phone,
+      timeZone: values.timeZone,
+      times: selectHours || [],
+    });
+
+    console.log('resposta', response);
+  }
+
   return (
     <div className='mx-auto'>
       <Form {...form}>
-        <form>
+        <form onSubmit={form.handleSubmit(submit)}>
           <Card>
             <CardHeader>
               <CardTitle>Meu Perfil</CardTitle>
@@ -89,7 +121,7 @@ export function ProfileContent() {
               <div className='flex justify-center'>
                 <div className='bg-gray-200 relative h-40 w-40 rounded-full overflow-hidden'>
                   <Image
-                    src={ImgTest}
+                    src={user.image ? user.image : ImgTest}
                     alt='Imagem de teste'
                     fill
                     className='object-cover'
@@ -168,7 +200,7 @@ export function ProfileContent() {
                       <FormControl>
                         <Select
                           onValueChange={field.onChange}
-                          defaultValue={field.value ? 'active' : 'deactive'}
+                          defaultValue={field.value ? 'active' : 'inactive'}
                         >
                           <SelectTrigger className='w-full'>
                             <SelectValue placeholder='Selecione o status' />
@@ -177,8 +209,8 @@ export function ProfileContent() {
                             <SelectItem value='active'>
                               Ativo (Clinica Aberta)
                             </SelectItem>
-                            <SelectItem value='deactive'>
-                              Desativado (Clinica Fechada)
+                            <SelectItem value='inactive'>
+                              Inativo (Clinica Fechada)
                             </SelectItem>
                           </SelectContent>
                         </Select>

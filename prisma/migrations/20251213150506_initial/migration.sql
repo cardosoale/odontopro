@@ -64,7 +64,7 @@ CREATE TABLE "users" (
     "address" TEXT,
     "phone" TEXT,
     "status" BOOLEAN NOT NULL DEFAULT true,
-    "timezone" TEXT,
+    "timeZone" TEXT,
     "strip_costumer_id" TEXT,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")

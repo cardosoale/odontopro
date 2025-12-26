@@ -8,15 +8,15 @@ declare module 'next-auth' {
 
 interface User {
   id: string;
-  name: string;
+  name: string | null;
   email: string;
   emailVerified?: null | string | boolean;
   image: string;
-  address: string;
-  phone: string;
+  address: string | null;
+  phone: string | null;
   status: Boolean;
-  timezone: string;
-  strip_costumer_id: string;
+  timeZone: string | null;
+  strip_costumer_id: string | null;
   times: string[];
   createdAt: string;
   updateAt: string;

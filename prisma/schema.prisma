@@ -85,7 +85,7 @@ model User {
   address       String?
   phone         String?
   status        Boolean @default(true)
-  timezone      String?
+  timeZone      String?
   strip_costumer_id String?
   times         String[] @default([])
 
