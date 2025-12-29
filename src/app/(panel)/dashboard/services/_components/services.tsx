@@ -1,4 +1,7 @@
+'use server';
+
 import { getAllServices } from '../_data-access/get-all-services';
+import ServicesList from './services-list';
 
 interface ServicesContentProps {
   userId: string;
@@ -10,9 +13,5 @@ export default async function ServicesContent({
   const services = await getAllServices({ userId: userId });
   console.log(services);
 
-  return (
-    <section>
-      <h1>Pagina de Serviços</h1>
-    </section>
-  );
+  return <ServicesList />;
 }
