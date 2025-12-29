@@ -17,10 +17,43 @@ import {
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { useDialogServiceForm } from './dialog-content-form';
+import {
+  DialogServiceFormData,
+  useDialogServiceForm,
+} from './dialog-content-form';
+import { changeCurrency } from '@/utils/change-currency';
+import { convertRealToCents } from '@/utils/convert-currency';
+import { createNewService } from '../_data-access/_actions/create-service';
+import { toast } from 'sonner';
+import { useState } from 'react';
 
 export function DialogServices() {
   const form = useDialogServiceForm(null);
+  const [loading, setLoading] = useState(false);
+
+  async function onSubmit(values: DialogServiceFormData) {
+    setLoading(true);
+    const priceInCents = convertRealToCents(values.price);
+
+    const hours = parseInt(values.hour) | 0;
+    const minutes = parseInt(values.minutes) | 0;
+    const duration = hours * 60 + minutes;
+
+    const response = await createNewService({
+      name: values.name,
+      price: priceInCents,
+      duration: duration,
+    });
+
+    setLoading(false);
+
+    if (response.error) {
+      toast.error(response.error);
+      return;
+    }
+    toast.success('Serviço adicionado com sucesso!');
+    form.reset();
+  }
 
   return (
     <>
@@ -54,7 +87,11 @@ export function DialogServices() {
                 <FormItem className='my-2'>
                   <FormLabel className='font-semibold'>Valor</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder='Ex.: R$120,00' />
+                    <Input
+                      {...field}
+                      placeholder='Ex.: R$120,00'
+                      onChange={(e) => changeCurrency(e, form)}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -104,8 +141,13 @@ export function DialogServices() {
             />
           </div>
 
-          <Button type='submit' className='font-semibold w-full text-white'>
-            Adicionar Serviço
+          <Button
+            type='submit'
+            className='font-semibold w-full text-white'
+            onClick={form.handleSubmit(onSubmit)}
+            disabled={loading}
+          >
+            {loading ? 'Adicionando...' : 'Adicionar Serviço'}
           </Button>
         </form>
       </Form>

@@ -24,7 +24,6 @@ import { DialogServices } from './dialog-services';
 
 export default function ServicesList() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedService, setSelectedService] = useState(null);
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -40,7 +39,7 @@ export default function ServicesList() {
               </Button>
             </DialogTrigger>
           </CardHeader>
-          <DialogContent>
+          <DialogContent onInteractOutside={(e) => e.preventDefault()}>
             <CardContent>
               <DialogServices />
             </CardContent>
