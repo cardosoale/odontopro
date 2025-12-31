@@ -19,10 +19,16 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { PlusIcon } from 'lucide-react';
+import { PencilIcon, PlusIcon, XIcon } from 'lucide-react';
 import { DialogServices } from './dialog-services';
+import { Service } from '@/generated/prisma/client';
+import { formatCurrency } from '@/utils/format-currency';
 
-export default function ServicesList() {
+interface ServicesListProps {
+  services: Service[];
+}
+
+export default function ServicesList({ services }: ServicesListProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   return (
@@ -38,12 +44,42 @@ export default function ServicesList() {
                 <PlusIcon className='w-4 h-4' />
               </Button>
             </DialogTrigger>
-          </CardHeader>
-          <DialogContent onInteractOutside={(e) => e.preventDefault()}>
-            <CardContent>
+            <DialogContent onInteractOutside={(e) => e.preventDefault()}>
               <DialogServices />
-            </CardContent>
-          </DialogContent>
+            </DialogContent>
+          </CardHeader>
+          <CardContent>
+            <section className='space-y-4 mt-5'>
+              {services.map((service) => (
+                <article
+                  key={service.id}
+                  className='flex flex-row justify-between items-center'
+                >
+                  <div className='flex items-center space-x-2'>
+                    <span className='font-medium'>{service.name}</span>
+                    <span className='text-gray-500'> - </span>
+                    <span className='text-gray-700'>
+                      {formatCurrency(service.price / 100)}
+                    </span>
+                  </div>
+                  <div className='flex items-center space-x-2'>
+                    <Button
+                      className='w-4 h-4 bg-white text-black  hover:bg-white hover:text-blue-500'
+                      onClick={() => {}}
+                    >
+                      <PencilIcon />
+                    </Button>
+                    <Button
+                      className='w-4 h-4 bg-white text-black hover:bg-white hover:text-red-500'
+                      onClick={() => {}}
+                    >
+                      <XIcon />
+                    </Button>
+                  </div>
+                </article>
+              ))}
+            </section>
+          </CardContent>
         </Card>
       </section>
     </Dialog>

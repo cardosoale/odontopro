@@ -13,5 +13,5 @@ export default async function ServicesContent({
   const services = await getAllServices({ userId: userId });
   console.log(services);
 
-  return <ServicesList />;
+  return <ServicesList services={services.data || []} />;
 }

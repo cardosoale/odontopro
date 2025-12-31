@@ -23,7 +23,7 @@ import {
 } from './dialog-content-form';
 import { changeCurrency } from '@/utils/change-currency';
 import { convertRealToCents } from '@/utils/convert-currency';
-import { createNewService } from '../_data-access/_actions/create-service';
+import { createNewService } from '../_actions/create-service';
 import { toast } from 'sonner';
 import { useState } from 'react';
 
