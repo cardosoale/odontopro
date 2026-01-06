@@ -23,9 +23,22 @@ import { PencilIcon, PlusIcon, XIcon } from 'lucide-react';
 import { DialogServices } from './dialog-services';
 import { Service } from '@/generated/prisma/client';
 import { formatCurrency } from '@/utils/format-currency';
+import { deleteService } from '../_actions/delete-service';
+import { toast } from 'sonner';
 
 interface ServicesListProps {
   services: Service[];
+}
+
+async function handleOnDelete(serviceId: string) {
+  const response = await deleteService({ serviceId: serviceId });
+
+  if (response.error) {
+    toast.error(response.error);
+    return;
+  }
+
+  toast.success('Serviço deletado com sucesso!');
 }
 
 export default function ServicesList({ services }: ServicesListProps) {
@@ -71,7 +84,7 @@ export default function ServicesList({ services }: ServicesListProps) {
                     </Button>
                     <Button
                       className='w-4 h-4 bg-white text-black hover:bg-white hover:text-red-500'
-                      onClick={() => {}}
+                      onClick={() => handleOnDelete(service.id)}
                     >
                       <XIcon />
                     </Button>

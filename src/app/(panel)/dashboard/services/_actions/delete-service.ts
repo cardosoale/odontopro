@@ -6,19 +6,17 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 
 const formSchema = z.object({
-  name: z.string().min(1, { message: 'Nome é obrigatório' }),
-  price: z.number().min(1, { message: 'Preço é obrigatório' }),
-  duration: z.number(),
+  serviceId: z.string().min(1, { message: 'Id é obrigatório' }),
 });
 
 type FormSchemaType = z.infer<typeof formSchema>;
 
-export async function createNewService(formData: FormSchemaType) {
+export async function deleteService(formData: FormSchemaType) {
   const session = await auth();
 
   if (!session?.user?.id) {
     return {
-      error: 'Você precisa estar logado para criar um serviço',
+      error: 'Você precisa estar logado para deletar um serviço',
     };
   }
 
@@ -26,28 +24,29 @@ export async function createNewService(formData: FormSchemaType) {
 
   if (!schema.success) {
     return {
-      error: 'Preencha os campos corretamente',
+      error: schema.error.issues[0].message,
     };
   }
 
   try {
-    const newService = await prisma.service.create({
-      data: {
-        name: formData.name,
-        price: formData.price,
-        duration: formData.duration,
+    await prisma.service.update({
+      where: {
+        id: formData.serviceId,
         userId: session.user.id,
+      },
+      data: {
+        status: false,
       },
     });
 
     revalidatePath('/dashboard/services');
 
     return {
-      data: newService,
+      data: 'Serviço deletado com sucesso',
     };
   } catch (err) {
     return {
-      error: 'Erro ao criar serviço',
+      error: 'Falha ao deletar serviço',
     };
   }
 }
