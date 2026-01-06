@@ -1,23 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { use, useState } from 'react';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { PencilIcon, PlusIcon, XIcon } from 'lucide-react';
 import { DialogServices } from './dialog-services';
@@ -30,19 +15,39 @@ interface ServicesListProps {
   services: Service[];
 }
 
-async function handleOnDelete(serviceId: string) {
-  const response = await deleteService({ serviceId: serviceId });
-
-  if (response.error) {
-    toast.error(response.error);
-    return;
-  }
-
-  toast.success('Serviço deletado com sucesso!');
-}
-
 export default function ServicesList({ services }: ServicesListProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editService, setEditService] = useState<null | Service>(null);
+
+  async function handleOnDelete(serviceId: string) {
+    const response = await deleteService({ serviceId: serviceId });
+
+    if (response.error) {
+      toast.error(response.error);
+      return;
+    }
+
+    toast.success('Serviço deletado com sucesso!');
+  }
+
+  const handleOnDeleteClick = (serviceId: string) => {
+    toast('Tem certeza que deseja deletar este serviço?', {
+      action: {
+        label: 'Confirmar',
+        onClick: () => handleOnDelete(serviceId),
+      },
+      cancel: {
+        label: 'Cancelar',
+        onClick: () => {},
+      },
+      duration: Infinity,
+    });
+  };
+
+  function handleEditService(service: Service) {
+    setEditService(service);
+    setIsDialogOpen(true);
+  }
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -58,7 +63,21 @@ export default function ServicesList({ services }: ServicesListProps) {
               </Button>
             </DialogTrigger>
             <DialogContent onInteractOutside={(e) => e.preventDefault()}>
-              <DialogServices />
+              <DialogServices
+                serviceId={editService ? editService.id : undefined}
+                initialValues={
+                  editService
+                    ? {
+                        name: editService.name,
+                        price: (editService.price / 100)
+                          .toFixed(2)
+                          .replace('.', ','),
+                        hour: Math.floor(editService.duration / 60).toString(),
+                        minutes: (editService.duration % 60).toString(),
+                      }
+                    : undefined
+                }
+              />
             </DialogContent>
           </CardHeader>
           <CardContent>
@@ -78,13 +97,15 @@ export default function ServicesList({ services }: ServicesListProps) {
                   <div className='flex items-center space-x-2'>
                     <Button
                       className='w-4 h-4 bg-white text-black  hover:bg-white hover:text-blue-500'
-                      onClick={() => {}}
+                      onClick={() => {
+                        handleEditService(service);
+                      }}
                     >
                       <PencilIcon />
                     </Button>
                     <Button
                       className='w-4 h-4 bg-white text-black hover:bg-white hover:text-red-500'
-                      onClick={() => handleOnDelete(service.id)}
+                      onClick={() => handleOnDeleteClick(service.id)}
                     >
                       <XIcon />
                     </Button>

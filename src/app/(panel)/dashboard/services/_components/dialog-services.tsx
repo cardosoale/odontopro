@@ -27,8 +27,21 @@ import { createNewService } from '../_actions/create-service';
 import { toast } from 'sonner';
 import { useState } from 'react';
 
-export function DialogServices() {
-  const form = useDialogServiceForm(null);
+interface DialogServicesProps {
+  serviceId?: string;
+  initialValues?: {
+    name: string;
+    price: string;
+    hour: string;
+    minutes: string;
+  };
+}
+
+export function DialogServices({
+  initialValues,
+  serviceId,
+}: DialogServicesProps) {
+  const form = useDialogServiceForm({ initialValues: initialValues });
   const [loading, setLoading] = useState(false);
 
   async function onSubmit(values: DialogServiceFormData) {
