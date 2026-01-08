@@ -52,6 +52,16 @@ export function DialogServices({
     const minutes = parseInt(values.minutes) | 0;
     const duration = hours * 60 + minutes;
 
+    if (serviceId) {
+      await editServiceById({
+        serviceId: serviceId,
+        name: values.name,
+        price: priceInCents,
+        duration: duration,
+      });
+      return;
+    }
+
     const response = await createNewService({
       name: values.name,
       price: priceInCents,
@@ -64,15 +74,37 @@ export function DialogServices({
       toast.error(response.error);
       return;
     }
-    toast.success('Serviço adicionado com sucesso!');
+    toast.success(
+      `${
+        serviceId
+          ? 'Serviço atualizado com sucesso!'
+          : 'Serviço adicionado com sucesso!'
+      }`
+    );
     form.reset();
+  }
+
+  async function editServiceById({
+    serviceId,
+    name,
+    price,
+    duration,
+  }: {
+    serviceId: string;
+    name: string;
+    price: number;
+    duration: number;
+  }) {
+    console.log('Aqui vamos editar o serviço');
   }
 
   return (
     <>
       <DialogHeader>
         <DialogTitle>Serviços</DialogTitle>
-        <DialogDescription>Adicione um novo serviço</DialogDescription>
+        <DialogDescription>{`${
+          serviceId ? 'Atualizar serviço' : 'Adicionar serviço'
+        }`}</DialogDescription>
       </DialogHeader>
       <Form {...form}>
         <form className='space-y-2'>
@@ -160,7 +192,9 @@ export function DialogServices({
             onClick={form.handleSubmit(onSubmit)}
             disabled={loading}
           >
-            {loading ? 'Adicionando...' : 'Adicionar Serviço'}
+            {loading
+              ? 'Aguarde...'
+              : `${serviceId ? 'Atualizar serviço' : 'Adicionar serviço'}`}
           </Button>
         </form>
       </Form>

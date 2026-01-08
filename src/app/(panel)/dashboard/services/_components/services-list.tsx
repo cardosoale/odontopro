@@ -19,6 +19,13 @@ export default function ServicesList({ services }: ServicesListProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editService, setEditService] = useState<null | Service>(null);
 
+  function handleOpenChange(open: boolean) {
+    setIsDialogOpen(open);
+    if (!open) {
+      setEditService(null);
+    }
+  }
+
   async function handleOnDelete(serviceId: string) {
     const response = await deleteService({ serviceId: serviceId });
 
@@ -45,12 +52,13 @@ export default function ServicesList({ services }: ServicesListProps) {
   };
 
   function handleEditService(service: Service) {
+    console.log(service);
     setEditService(service);
     setIsDialogOpen(true);
   }
 
   return (
-    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+    <Dialog open={isDialogOpen} onOpenChange={handleOpenChange}>
       <section className='mx-auto'>
         <Card>
           <CardHeader className='flex flex-row justify-between items-center space-y-0 pb-2'>
