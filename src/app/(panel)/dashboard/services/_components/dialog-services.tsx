@@ -26,6 +26,7 @@ import { convertRealToCents } from '@/utils/convert-currency';
 import { createNewService } from '../_actions/create-service';
 import { toast } from 'sonner';
 import { useState } from 'react';
+import { updateService } from '../_actions/update-service';
 
 interface DialogServicesProps {
   serviceId?: string;
@@ -95,7 +96,20 @@ export function DialogServices({
     price: number;
     duration: number;
   }) {
-    console.log('Aqui vamos editar o serviço');
+    const response = await updateService({
+      serviceId: serviceId,
+      name: name,
+      price: price,
+      duration: duration,
+    });
+
+    setLoading(false);
+
+    if (response.error) {
+      toast.error(response.error);
+      return;
+    }
+    toast.success('Serviço atualizado com sucesso!');
   }
 
   return (
