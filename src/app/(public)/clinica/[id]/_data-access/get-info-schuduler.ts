@@ -2,7 +2,7 @@
 
 import prisma from '@/lib/prisma';
 
-export async function getinfoSchuduller({ userId }: { userId: string }) {
+export async function getinfoSchuduler({ userId }: { userId: string }) {
   try {
     if (!userId) return null;
 

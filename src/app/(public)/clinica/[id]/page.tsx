@@ -1,18 +1,18 @@
 import { redirect } from 'next/navigation';
-import { getinfoSchuduller } from './_data-access/get-info-schuduller';
-import { SchudullerContent } from './_components/schuduller';
+import { getinfoSchuduler } from './_data-access/get-info-schuduler';
+import { SchedulerContent } from './_components/scheduler';
 
-export default async function SchedullerPage({
+export default async function SchedulerPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const userId = (await params).id;
-  const user = await getinfoSchuduller({ userId: userId });
+  const user = await getinfoSchuduler({ userId: userId });
   console.log(user);
 
   // TODO CRIAR PAGINA 404
   if (!user) redirect('/');
 
-  return <SchudullerContent clinic={user} />;
+  return <SchedulerContent clinic={user} />;
 }

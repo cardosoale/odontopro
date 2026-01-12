@@ -4,6 +4,16 @@ import Image from 'next/image';
 import imgTest from '../../../../../../public/foto1.png';
 import { MapPinIcon } from 'lucide-react';
 import { Prisma } from '@prisma/client';
+import { useAppointmentForm } from './scheduler-form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 
 type UserWhihServiceAndSubscription = Prisma.UserGetPayload<{
   include: {
@@ -12,11 +22,13 @@ type UserWhihServiceAndSubscription = Prisma.UserGetPayload<{
   };
 }>;
 
-interface SchudellerContentProps {
+interface SchedulerContentProps {
   clinic: UserWhihServiceAndSubscription;
 }
 
-export function SchudullerContent({ clinic }: SchudellerContentProps) {
+export function SchedulerContent({ clinic }: SchedulerContentProps) {
+  const form = useAppointmentForm();
+
   return (
     <div className='min-h-screen flex flex-col'>
       <div className='h-32 bg-emerald-500' />
@@ -43,6 +55,28 @@ export function SchudullerContent({ clinic }: SchudellerContentProps) {
           </article>
         </div>
       </section>
+
+      <Form {...form}>
+        <form className='mx-2 space-y-6 bg-white p-6 border border-md shadow-sm'>
+          <FormField
+            control={form.control}
+            name='name'
+            render={({ field }) => (
+              <FormItem className='my-2'>
+                <FormLabel className='font-semibold'>Nome</FormLabel>
+                <FormControl>
+                  <Input
+                    id='name'
+                    placeholder='Digite seu nome aqui'
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </form>
+      </Form>
     </div>
   );
 }
