@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 import { getinfoSchuduller } from './_data-access/get-info-schuduller';
+import { SchudullerContent } from './_components/schuduller';
 
 export default async function SchedullerPage({
   params,
@@ -13,5 +14,5 @@ export default async function SchedullerPage({
   // TODO CRIAR PAGINA 404
   if (!user) redirect('/');
 
-  return <h1>Teste: {userId}</h1>;
+  return <SchudullerContent />;
 }
