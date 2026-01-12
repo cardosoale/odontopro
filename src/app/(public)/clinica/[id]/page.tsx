@@ -14,5 +14,5 @@ export default async function SchedullerPage({
   // TODO CRIAR PAGINA 404
   if (!user) redirect('/');
 
-  return <SchudullerContent />;
+  return <SchudullerContent clinic={user} />;
 }
