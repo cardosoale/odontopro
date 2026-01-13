@@ -5,9 +5,9 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 const AppointmentSchema = z.object({
-  name: z.string().min(1, 'Nome é obrigatório'),
+  name: z.string().min(5, 'Nome é obrigatório'),
   email: z.email('Email inválido'),
-  phone: z.string().min(1, 'Telefone é obrigatório'),
+  phone: z.string().min(13, 'Telefone é obrigatório'),
   date: z.date(),
   serviceId: z.string().min(1, 'Serviço é obrigatório'),
 });
