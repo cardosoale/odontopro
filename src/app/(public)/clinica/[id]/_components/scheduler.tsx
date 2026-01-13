@@ -26,6 +26,7 @@ import {
   SelectItem,
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
+import { use, useState } from 'react';
 
 type UserWhihServiceAndSubscription = Prisma.UserGetPayload<{
   include: {
@@ -40,6 +41,18 @@ interface SchedulerContentProps {
 
 export function SchedulerContent({ clinic }: SchedulerContentProps) {
   const form = useAppointmentForm();
+
+  interface TimeSlot {
+    time: string;
+    isAvailable: boolean;
+  }
+
+  const [selectedTime, setSelectedTime] = useState('');
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<TimeSlot[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  // Horários bloqueados
+  const [blockedTimes, setBlockedTimes] = useState<string[]>([]);
 
   async function handleRegisterAppointments(formData: AppointmentFormData) {
     console.log(formData);
