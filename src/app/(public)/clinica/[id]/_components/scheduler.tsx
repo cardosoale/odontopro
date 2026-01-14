@@ -26,7 +26,7 @@ import {
   SelectItem,
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { use, useState } from 'react';
+import { use, useCallback, useEffect, useState } from 'react';
 
 type UserWhihServiceAndSubscription = Prisma.UserGetPayload<{
   include: {
@@ -47,12 +47,43 @@ export function SchedulerContent({ clinic }: SchedulerContentProps) {
     isAvailable: boolean;
   }
 
+  const selectedDate = form.watch('date');
+  const selectedId = form.watch('serviceId');
+
   const [selectedTime, setSelectedTime] = useState('');
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<TimeSlot[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loadingSlot, setLoadingSlots] = useState(false);
 
   // Horários bloqueados
   const [blockedTimes, setBlockedTimes] = useState<string[]>([]);
+
+  const fetchBlockedTimes = useCallback(
+    async (date: Date): Promise<string[]> => {
+      setLoadingSlots(true);
+
+      try {
+        const dateString = date.toISOString().split('T')[0];
+
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_URL}/api/scheduler/get-appointments?userId=${clinic.id}&date=${dateString}`
+        );
+        return [];
+      } catch (err) {
+        console.log(err);
+        setLoadingSlots(false);
+        return [];
+      }
+    },
+    [clinic.id]
+  );
+
+  useEffect(() => {
+    if (selectedDate) {
+      fetchBlockedTimes(selectedDate).then((blocked) => {
+        console.log('horarios reservados:', blocked);
+      });
+    }
+  }, [selectedDate, clinic.times, fetchBlockedTimes, selectedTime]);
 
   async function handleRegisterAppointments(formData: AppointmentFormData) {
     console.log(formData);
