@@ -51,7 +51,7 @@ export function SchedulerContent({ clinic }: SchedulerContentProps) {
   const selectedId = form.watch('serviceId');
 
   const [selectedTime, setSelectedTime] = useState('');
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState<TimeSlot[]>([]);
+  const [availableTimeSlots, setAvailableTimeSlots] = useState<TimeSlot[]>([]);
   const [loadingSlot, setLoadingSlots] = useState(false);
 
   // Horários bloqueados
@@ -65,29 +65,39 @@ export function SchedulerContent({ clinic }: SchedulerContentProps) {
         const dateString = date.toISOString().split('T')[0];
 
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_URL}/api/scheduler/get-appointments?userId=${clinic.id}&date=${dateString}`
+          `${process.env.NEXT_PUBLIC_URL}/api/scheduler/get-appointments?userId=${clinic.id}&date=${dateString}`,
         );
-        return [];
+
+        const blockedSlots: string[] = await response.json();
+        setLoadingSlots(false);
+
+        return blockedSlots;
       } catch (err) {
         console.log(err);
         setLoadingSlots(false);
         return [];
       }
     },
-    [clinic.id]
+    [clinic.id],
   );
 
   useEffect(() => {
     if (selectedDate) {
       fetchBlockedTimes(selectedDate).then((blocked) => {
-        console.log('horarios reservados:', blocked);
+        setBlockedTimes(blocked);
+        const times = clinic.times || [];
+
+        const availableTimes = times.map((time) => ({
+          time: time,
+          isAvailable: !blocked.includes(time),
+        }));
+
+        setAvailableTimeSlots(availableTimes);
       });
     }
   }, [selectedDate, clinic.times, fetchBlockedTimes, selectedTime]);
 
-  async function handleRegisterAppointments(formData: AppointmentFormData) {
-    console.log(formData);
-  }
+  async function handleRegisterAppointments(formData: AppointmentFormData) {}
 
   return (
     <div className='min-h-screen flex flex-col'>
