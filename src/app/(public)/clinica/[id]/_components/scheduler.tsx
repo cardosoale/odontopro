@@ -27,6 +27,9 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { use, useCallback, useEffect, useState } from 'react';
+import { Label } from '@/components/ui/label';
+import { SchedulerTimeList } from './scheduler-time-list';
+import { toast } from 'sonner';
 
 type UserWhihServiceAndSubscription = Prisma.UserGetPayload<{
   include: {
@@ -39,16 +42,15 @@ interface SchedulerContentProps {
   clinic: UserWhihServiceAndSubscription;
 }
 
+export interface TimeSlot {
+  time: string;
+  isAvailable: boolean;
+}
 export function SchedulerContent({ clinic }: SchedulerContentProps) {
   const form = useAppointmentForm();
 
-  interface TimeSlot {
-    time: string;
-    isAvailable: boolean;
-  }
-
   const selectedDate = form.watch('date');
-  const selectedId = form.watch('serviceId');
+  const selectedServiceId = form.watch('serviceId');
 
   const [selectedTime, setSelectedTime] = useState('');
   const [availableTimeSlots, setAvailableTimeSlots] = useState<TimeSlot[]>([]);
@@ -97,7 +99,20 @@ export function SchedulerContent({ clinic }: SchedulerContentProps) {
     }
   }, [selectedDate, clinic.times, fetchBlockedTimes, selectedTime]);
 
-  async function handleRegisterAppointments(formData: AppointmentFormData) {}
+  async function handleRegisterAppointments(formData: AppointmentFormData) {
+    const appointmentsData = {
+      ...formData,
+      time: selectedTime,
+      clinicId: clinic.id,
+    };
+
+    if (!selectedTime) {
+      toast.error('Selecione um horario');
+      return;
+    }
+
+    console.log(appointmentsData);
+  }
 
   return (
     <div className='min-h-screen flex flex-col'>
@@ -245,6 +260,39 @@ export function SchedulerContent({ clinic }: SchedulerContentProps) {
               )}
             />
 
+            {selectedServiceId && (
+              <div className='space-y-2'>
+                <Label className='font-semibold'>Horarios disponíveis: </Label>
+                <div className='bg-gray-50 p-4 rounnded-lg'>
+                  {loadingSlot ? (
+                    <p>Carregando horários...</p>
+                  ) : availableTimeSlots.length === 0 ? (
+                    <p>Nenhum horário disponível</p>
+                  ) : (
+                    <SchedulerTimeList
+                      onSelectTime={(time) => setSelectedTime(time)}
+                      clinicTimes={clinic.times}
+                      availableTimeSlot={availableTimeSlots}
+                      blockedTimes={blockedTimes}
+                      selectedDate={selectedDate}
+                      selectedTime={selectedTime}
+                      requiredSlot={
+                        clinic.services.find(
+                          (service) => service.id === selectedServiceId,
+                        )
+                          ? Math.ceil(
+                              clinic.services.find(
+                                (service) => service.id === selectedServiceId,
+                              )!.duration / 30,
+                            )
+                          : 1
+                      }
+                    />
+                  )}
+                </div>
+              </div>
+            )}
+
             {clinic.status ? (
               <Button
                 type='submit'
@@ -255,7 +303,7 @@ export function SchedulerContent({ clinic }: SchedulerContentProps) {
                   !form.watch('email') ||
                   !form.watch('phone')
                 }
-                className='w-full bg-emerald-500 hover:bg-emerald-400'
+                className='w-full bg-emerald-500 hover:bg-emerald-400 select-none'
               >
                 Confirmar agendamento
               </Button>

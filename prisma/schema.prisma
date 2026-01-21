@@ -13,7 +13,8 @@ datasource db {
 }
 
 model Appointment{
-  id            String    @id @default(cuid())
+  id            String    @id @default(uuid())
+  email         String?
   name          String?
   phone         String?
   appointmentDate DateTime
