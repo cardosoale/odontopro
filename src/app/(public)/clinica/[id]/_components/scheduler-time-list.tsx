@@ -3,8 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { TimeSlot } from './scheduler';
 import { cn } from '@/lib/utils';
-import { isToday } from 'date-fns';
-import { slotInThePast } from '../_utils/schudele-utils';
+import { slotInThePast, isToday } from '../_utils/schudele-utils';
 
 interface SchedulerTimeListProps {
   selectedDate: Date;
