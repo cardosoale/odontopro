@@ -30,6 +30,7 @@ import { use, useCallback, useEffect, useState } from 'react';
 import { Label } from '@/components/ui/label';
 import { SchedulerTimeList } from './scheduler-time-list';
 import { toast } from 'sonner';
+import { createNewAppointment } from '../_actions/create-appointment';
 
 type UserWhihServiceAndSubscription = Prisma.UserGetPayload<{
   include: {
@@ -89,29 +90,45 @@ export function SchedulerContent({ clinic }: SchedulerContentProps) {
         setBlockedTimes(blocked);
         const times = clinic.times || [];
 
-        const availableTimes = times.map((time) => ({
+        const finalSlots = times.map((time) => ({
           time: time,
           isAvailable: !blocked.includes(time),
         }));
 
-        setAvailableTimeSlots(availableTimes);
+        setAvailableTimeSlots(finalSlots);
+
+        const stillAvailable = finalSlots.find(
+          (slot) => slot.time === selectedTime && slot.isAvailable,
+        );
+
+        if (!stillAvailable) setSelectedTime('');
       });
     }
   }, [selectedDate, clinic.times, fetchBlockedTimes, selectedTime]);
 
   async function handleRegisterAppointments(formData: AppointmentFormData) {
-    const appointmentsData = {
-      ...formData,
-      time: selectedTime,
-      clinicId: clinic.id,
-    };
-
     if (!selectedTime) {
       toast.error('Selecione um horario');
       return;
     }
+    const response = await createNewAppointment({
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      time: selectedTime,
+      date: formData.date,
+      serviceId: formData.serviceId,
+      clinicId: clinic.id,
+    });
 
-    console.log(appointmentsData);
+    if (response.error) {
+      toast.error(response.error);
+      return;
+    }
+
+    toast.success('Consulta agendada com sucesso!');
+    form.reset();
+    setSelectedTime('');
   }
 
   return (

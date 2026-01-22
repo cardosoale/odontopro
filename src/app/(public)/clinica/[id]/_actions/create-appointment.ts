@@ -28,7 +28,7 @@ export async function createNewAppointment(formData: FormSchema) {
     const selectedDate = new Date(formData.date);
 
     const year = selectedDate.getFullYear();
-    const month = selectedDate.getMonth() + 1;
+    const month = selectedDate.getMonth();
     const day = selectedDate.getDate();
 
     const appointmentDate = new Date(year, month, day, 0, 0, 0, 0);
@@ -38,7 +38,7 @@ export async function createNewAppointment(formData: FormSchema) {
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
-        time: formData.email,
+        time: formData.time,
         appointmentDate: appointmentDate,
         serviceId: formData.serviceId,
         userId: formData.clinicId,

@@ -3,6 +3,8 @@
 import { Button } from '@/components/ui/button';
 import { TimeSlot } from './scheduler';
 import { cn } from '@/lib/utils';
+import { isToday } from 'date-fns';
+import { slotInThePast } from '../_utils/schudele-utils';
 
 interface SchedulerTimeListProps {
   selectedDate: Date;
@@ -23,11 +25,15 @@ export function SchedulerTimeList({
   selectedTime,
   onSelectTime,
 }: SchedulerTimeListProps) {
+  const dateIsToday = isToday(selectedDate);
+
   return (
     <div className='grid grid-cols-3 md:grid-cols-5 gap-2'>
       {availableTimeSlot.map((slot) => {
+        const slotIsPast = dateIsToday && slotInThePast(slot.time);
         return (
           <Button
+            disabled={slotIsPast}
             onClick={() => onSelectTime(slot.time)}
             type='button'
             variant={'outline'}
