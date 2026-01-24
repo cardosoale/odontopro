@@ -15,7 +15,7 @@ export function isToday(date: Date) {
  * Verifica se determinado slot(horário), está no passado.
  */
 
-export function slotInThePast(slotTime: string) {
+export function isSlotInThePast(slotTime: string) {
   // separar(split) horas e minutos
   const [slotHours, slotMinutes] = slotTime.split(':').map(Number);
 
@@ -28,4 +28,24 @@ export function slotInThePast(slotTime: string) {
     return true;
 
   return false;
+}
+
+export function isSlotSequenceAvailable(
+  startSlot: string,
+  requiredSlots: number,
+  allSlots: string[],
+  blockedSlots: string[],
+) {
+  const startIndex = allSlots.indexOf(startSlot);
+
+  if (startIndex === -1 || startIndex + requiredSlots > allSlots.length)
+    return false;
+
+  for (let i = startIndex; i < startIndex + requiredSlots; i++) {
+    const slotTime = allSlots[i];
+
+    if (blockedSlots.includes(slotTime)) return false;
+  }
+
+  return true;
 }

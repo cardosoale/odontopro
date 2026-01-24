@@ -3,7 +3,11 @@
 import { Button } from '@/components/ui/button';
 import { TimeSlot } from './scheduler';
 import { cn } from '@/lib/utils';
-import { slotInThePast, isToday } from '../_utils/schudele-utils';
+import {
+  isSlotInThePast,
+  isToday,
+  isSlotSequenceAvailable,
+} from '../_utils/schudele-utils';
 
 interface SchedulerTimeListProps {
   selectedDate: Date;
@@ -29,11 +33,19 @@ export function SchedulerTimeList({
   return (
     <div className='grid grid-cols-3 md:grid-cols-5 gap-2'>
       {availableTimeSlot.map((slot) => {
-        const slotIsPast = dateIsToday && slotInThePast(slot.time);
+        const sequenceOk = isSlotSequenceAvailable(
+          slot.time,
+          requiredSlot,
+          clinicTimes,
+          blockedTimes,
+        );
+
+        const slotIsPast = dateIsToday && isSlotInThePast(slot.time);
+
+        const slotEnabled = slot.isAvailable && sequenceOk && !slotIsPast;
         return (
           <Button
-            disabled={slotIsPast}
-            onClick={() => onSelectTime(slot.time)}
+            onClick={() => slotEnabled && onSelectTime(slot.time)}
             type='button'
             variant={'outline'}
             key={slot.time}
@@ -41,7 +53,9 @@ export function SchedulerTimeList({
               'h-10 select-none',
               selectedTime === slot.time &&
                 'border-2 border-emerald-500 text-primary',
+              !slotEnabled && 'opacity-50',
             )}
+            disabled={!slotEnabled}
           >
             {slot.time}
           </Button>
