@@ -237,6 +237,7 @@ export function SchedulerContent({ clinic }: SchedulerContentProps) {
                       onChange={(date) => {
                         if (date) {
                           field.onChange(date);
+                          setSelectedTime('');
                         }
                       }}
                     />
@@ -256,7 +257,10 @@ export function SchedulerContent({ clinic }: SchedulerContentProps) {
                   </FormLabel>
                   <FormControl>
                     <Select
-                      onValueChange={field.onChange}
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        setSelectedTime('');
+                      }}
                       defaultValue={field.value}
                     >
                       <SelectTrigger>
