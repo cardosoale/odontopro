@@ -37,12 +37,12 @@ import ImgTest from '@/../public/foto1.png';
 import { ArrowRightIcon, LogOutIcon } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { Prisma } from '@/generated/prisma/client';
 import { updateProfile } from '../_actions/update-profile';
 import { toast } from 'sonner';
 import { formatPhone } from '@/utils/format-phone';
 import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { Prisma } from '@prisma/client';
 
 type UserWithSubscription = Prisma.UserGetPayload<{
   include: {
@@ -77,7 +77,7 @@ export function ProfileContent({ user }: ProfileContentProps) {
       zone.startsWith('America/Belem') ||
       zone.startsWith('America/Manaus') ||
       zone.startsWith('America/Cuiaba') ||
-      zone.startsWith('America/Boa_Vista')
+      zone.startsWith('America/Boa_Vista'),
   );
 
   function generateTimeSlot(): string[] {
@@ -98,7 +98,7 @@ export function ProfileContent({ user }: ProfileContentProps) {
     setSelectHours((prev) =>
       prev.includes(hour)
         ? prev.filter((h) => h !== hour)
-        : [...prev, hour].sort()
+        : [...prev, hour].sort(),
     );
   }
 
@@ -274,7 +274,7 @@ export function ProfileContent({ user }: ProfileContentProps) {
                               className={cn(
                                 'h-10',
                                 selectHours.includes(hour) &&
-                                  'border-2 border-emerald-500 text-primary'
+                                  'border-2 border-emerald-500 text-primary',
                               )}
                             >
                               {hour}

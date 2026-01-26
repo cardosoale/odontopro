@@ -1,5 +1,9 @@
+import { Button } from '@/components/ui/button';
 import getSession from '@/lib/getSession';
+import { Calendar1Icon } from 'lucide-react';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import { ButtonCopyLink } from './_components/button-copy-link';
 
 export default async function Dashboard() {
   const session = await getSession();
@@ -9,14 +13,17 @@ export default async function Dashboard() {
   }
 
   return (
-    <div>
-      <h1>Página Dashboard</h1>
-
-      <div className='w-full h-[600px] bg-gray-200 mb-10'></div>
-
-      <div className='w-full h-[600px] bg-gray-500 mb-10'></div>
-
-      <div className='w-full h-[600px] bg-gray-200 mb-10'></div>
-    </div>
+    <main>
+      <div className='flex space-x-2 items-center justify-end'>
+        <Button asChild className='bg-emerald-500 hover:bg-emerald-400   gap-2'>
+          <Link href={`/clinica/${session.user?.id}`} target='_blank'>
+            <Calendar1Icon className='w-5 h-5' />
+            <span>Novo Agendamento</span>
+          </Link>
+        </Button>
+        <ButtonCopyLink userId={session.user?.id} />
+      </div>
+      <section className='grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4'></section>
+    </main>
   );
 }
