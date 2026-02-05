@@ -9,12 +9,28 @@ import {
 import { ReminderFormData, useReminderForm } from './reminder-form';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { createReminder } from '../../_actions/create-reminder';
+import { toast } from 'sonner';
 
-export function ReminderContent() {
+interface ReminderContentProps {
+  closeDialog: () => void;
+}
+
+export function ReminderContent({ closeDialog }: ReminderContentProps) {
   const form = useReminderForm();
 
   async function onSubmit(formData: ReminderFormData) {
-    console.log(formData);
+    const resṕonse = await createReminder({
+      description: formData.description,
+    });
+
+    if (resṕonse.error) {
+      toast.error(resṕonse.error);
+      return;
+    }
+
+    toast.success(resṕonse.data);
+    closeDialog();
   }
 
   return (

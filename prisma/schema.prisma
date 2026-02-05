@@ -20,10 +20,10 @@ model Appointment{
   appointmentDate DateTime
   time String
 
-  serviceId String @unique
+  serviceId String
   service Service @relation(fields: [serviceId], references: [id])
 
-  userId String @unique
+  userId String
   user User @relation(fields: [userId], references: [id])
 
   createdAt DateTime @default(now())
@@ -34,7 +34,7 @@ model Reminder{
    id String @id @default(uuid())
   description String
 
-  userId String @unique
+  userId String 
   user User @relation(fields: [userId], references: [id])
 
   createdAt DateTime @default(now())

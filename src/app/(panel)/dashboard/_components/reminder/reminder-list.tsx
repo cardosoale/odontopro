@@ -6,7 +6,6 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Reminder } from '@prisma/client';
 import { PlusIcon, TrashIcon } from 'lucide-react';
 import { deleteReminder } from '../../_actions/delete-reminder';
-import { string } from 'zod';
 import { toast } from 'sonner';
 import {
   Dialog,
@@ -17,14 +16,17 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { ReminderContent } from './reminder-content';
+import { useState } from 'react';
 
 interface ReminderListProps {
   reminder: Reminder[];
 }
 
 export function ReminderList({ reminder }: ReminderListProps) {
+  const [isDialogOpen, SetIsDialogOpen] = useState(false);
+
   async function handleDeleteReminder(id: string) {
-    const response = await deleteReminder({ reminderId: '' });
+    const response = await deleteReminder({ reminderId: id });
 
     if (response?.error) {
       toast.error(response.error);
@@ -40,7 +42,7 @@ export function ReminderList({ reminder }: ReminderListProps) {
           <CardTitle className='text-xl md:text-2xl font-bold'>
             Lembretes
           </CardTitle>
-          <Dialog>
+          <Dialog open={isDialogOpen} onOpenChange={SetIsDialogOpen}>
             <DialogTrigger asChild>
               <Button
                 variant={'link'}
@@ -54,7 +56,7 @@ export function ReminderList({ reminder }: ReminderListProps) {
                 <DialogTitle>Novo lembrete</DialogTitle>
                 <DialogDescription>Criar um novo lembrete</DialogDescription>
               </DialogHeader>
-              <ReminderContent />
+              <ReminderContent closeDialog={() => SetIsDialogOpen(false)} />
             </DialogContent>
           </Dialog>
         </CardHeader>
