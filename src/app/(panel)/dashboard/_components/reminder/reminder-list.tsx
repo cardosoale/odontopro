@@ -67,7 +67,7 @@ export function ReminderList({ reminder }: ReminderListProps) {
             </p>
           )}
 
-          <ScrollArea className='h-340 lg:max-h[calc(100vh-15rem)] pr-0 w-full'>
+          <ScrollArea className='h-[calc(100vh-20rem)] lg:h-[calc(100vh-15rem)] pr-4'>
             {reminder.map((item) => (
               <article
                 key={item.id}
