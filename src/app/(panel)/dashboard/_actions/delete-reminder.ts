@@ -1,5 +1,6 @@
 'use server';
 
+import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
@@ -11,6 +12,14 @@ const formSchema = z.object({
 type FormSchema = z.infer<typeof formSchema>;
 
 export async function deleteReminder(formData: FormSchema) {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    return {
+      error: 'Usuário não autenticado.',
+    };
+  }
+
   const schema = formSchema.safeParse(formData);
 
   if (!schema.success) {
@@ -23,6 +32,7 @@ export async function deleteReminder(formData: FormSchema) {
     await prisma.reminder.delete({
       where: {
         id: formData.reminderId,
+        userId: session.user.id,
       },
     });
 

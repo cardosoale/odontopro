@@ -47,6 +47,10 @@ export const GET = auth(async function GET(request) {
     const appointments = await prisma.appointment.findMany({
       where: {
         userId: clinicId,
+        appointmentDate: {
+          gte: startDate,
+          lte: endDate,
+        },
       },
       include: {
         service: true,
