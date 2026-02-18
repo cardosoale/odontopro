@@ -10,8 +10,11 @@ import { EyeIcon, XIcon } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import { cancelAppointment } from '../../_actions/cancel-appointment';
 import { toast } from 'sonner';
+import { useState } from 'react';
+import { Dialog, DialogTrigger } from '@/components/ui/dialog';
+import { DialogAppointment } from './dialog-appointment';
 
-type AppointmentsWhithService = Prisma.AppointmentGetPayload<{
+export type AppointmentsWhithService = Prisma.AppointmentGetPayload<{
   include: {
     service: true;
   };
@@ -25,6 +28,9 @@ export function AppointmentsList({ times }: AppointmentsListProps) {
   const searchParams = useSearchParams();
   const date = searchParams.get('date');
   const queryClient = useQueryClient();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [detailAppointment, setDetailAppointment] =
+    useState<AppointmentsWhithService | null>(null);
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['get-appointments', date],
@@ -96,65 +102,76 @@ export function AppointmentsList({ times }: AppointmentsListProps) {
   }
 
   return (
-    <Card>
-      <CardHeader className=' flex items-center justify-between space-y-0 pb-2'>
-        <CardTitle className='text-xl md:text-2xl font-bold'>
-          Agendamentos
-        </CardTitle>
-        <button>SELECIONAR DATA</button>
-      </CardHeader>
-      <CardContent>
-        <ScrollArea className='h-[calc(100vh-20rem)] lg:h-[calc(100vh-15rem)] pr-4'>
-          {isLoading ? (
-            <p>Carregando agenda...</p>
-          ) : (
-            times.map((slot) => {
-              const occupant = occupantmap[slot];
-              if (occupant) {
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <Card>
+        <CardHeader className=' flex items-center justify-between space-y-0 pb-2'>
+          <CardTitle className='text-xl md:text-2xl font-bold'>
+            Agendamentos
+          </CardTitle>
+          <button>SELECIONAR DATA</button>
+        </CardHeader>
+        <CardContent>
+          <ScrollArea className='h-[calc(100vh-20rem)] lg:h-[calc(100vh-15rem)] pr-4'>
+            {isLoading ? (
+              <p>Carregando agenda...</p>
+            ) : (
+              times.map((slot) => {
+                const occupant = occupantmap[slot];
+                if (occupant) {
+                  return (
+                    <div
+                      key={slot}
+                      className='flex items-center py-2 border-t last:border-b'
+                    >
+                      <div className='w-16 text-sm font-semibold'>{slot}</div>
+                      <div className=' flex-1 text-sm'>
+                        <div className='font-semibold'>{occupant.name}</div>
+                        <div className='text-sm text-gray-500'>
+                          {occupant.phone}
+                        </div>
+                      </div>
+                      <div className='ml-auto '>
+                        <div className='flex'>
+                          <DialogTrigger asChild>
+                            <Button
+                              size={'icon'}
+                              variant={'ghost'}
+                              onClick={() => {
+                                setDetailAppointment(occupant);
+                              }}
+                            >
+                              <EyeIcon className='w-4 h-4' />
+                            </Button>
+                          </DialogTrigger>
+                          <Button
+                            size={'icon'}
+                            variant={'ghost'}
+                            onClick={() => handleCancelAppointment(occupant.id)}
+                          >
+                            <XIcon className='w-4 h-4' />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
                 return (
                   <div
                     key={slot}
                     className='flex items-center py-2 border-t last:border-b'
                   >
                     <div className='w-16 text-sm font-semibold'>{slot}</div>
-                    <div className=' flex-1 text-sm'>
-                      <div className='font-semibold'>{occupant.name}</div>
-                      <div className='text-sm text-gray-500'>
-                        {occupant.phone}
-                      </div>
-                    </div>
-                    <div className='ml-auto '>
-                      <div className='flex'>
-                        <Button size={'icon'} variant={'ghost'}>
-                          <EyeIcon className='w-4 h-4' />
-                        </Button>
-                        <Button
-                          size={'icon'}
-                          variant={'ghost'}
-                          onClick={() => handleCancelAppointment(occupant.id)}
-                        >
-                          <XIcon className='w-4 h-4' />
-                        </Button>
-                      </div>
+                    <div className=' flex-1 text-sm text-gray-500'>
+                      Disponível
                     </div>
                   </div>
                 );
-              }
-              return (
-                <div
-                  key={slot}
-                  className='flex items-center py-2 border-t last:border-b'
-                >
-                  <div className='w-16 text-sm font-semibold'>{slot}</div>
-                  <div className=' flex-1 text-sm text-gray-500'>
-                    Disponível
-                  </div>
-                </div>
-              );
-            })
-          )}
-        </ScrollArea>
-      </CardContent>
-    </Card>
+              })
+            )}
+          </ScrollArea>
+        </CardContent>
+      </Card>
+      <DialogAppointment appointment={detailAppointment} />
+    </Dialog>
   );
 }
