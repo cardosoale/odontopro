@@ -26,7 +26,12 @@ export function DialogAppointment({ appointment }: DialogAppointmentProps) {
           <article>
             <p>
               <span className='font-semibold'>Data agendada:</span>{' '}
-              {format(appointment.appointmentDate, 'dd/MM/yyyy')}
+              {new Intl.DateTimeFormat('pt-BR', {
+                timeZone: 'UTC',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+              }).format(new Date(appointment.appointmentDate))}
             </p>
             <p className='mb-2'>
               <span className='font-semibold'>Horario agendado:</span>{' '}
