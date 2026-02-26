@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -10,11 +11,11 @@ import { subscriptionPlans } from '@/utils/plans/index';
 
 export function GridPlans() {
   return (
-    <div className='flex gap-4'>
+    <section className='md:grid md:grid-cols-2 gap-4 lg:gap-6'>
       {subscriptionPlans.map((plan, index) => (
         <Card
           key={plan.id}
-          className={`flex flex-col w-full mx-auto overflow-hidden ${index === 1 ? 'pt-0' : ''}`}
+          className={`flex flex-col w-full mx-auto my-4 overflow-hidden ${index === 1 ? 'pt-0 border-emerald-500' : ''}`}
         >
           {index === 1 && (
             <div className='bg-emerald-500 w-full py-3 text-center'>
@@ -23,19 +24,27 @@ export function GridPlans() {
           )}
 
           <CardHeader>
-            <CardTitle>{plan.name}</CardTitle>
+            <CardTitle className='text-xl md:text-2xl'>{plan.name}</CardTitle>
             <CardDescription>{plan.description}</CardDescription>
           </CardHeader>
 
           <CardContent>
             <ul>
               {plan.features.map((feature, index) => (
-                <li key={index}>{feature}</li>
+                <li className='text-sm md:text-base' key={index}>{feature}</li>
               ))}
             </ul>
+
+            <div className='mt-4'>
+              <p className='text-gray-500 text-sm md:text-base line-through'>{plan.oldPrice}</p>
+              <p className='text-lg font-semibold mt-1'>{plan.price}</p>
+            </div>
           </CardContent>
+          <CardFooter>
+            <Button className='w-full'>Assinar Plano</Button>
+          </CardFooter>
         </Card>
       ))}
-    </div>
+    </section>
   );
 }
