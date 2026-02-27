@@ -16,7 +16,7 @@ interface User {
   phone: string | null;
   status: Boolean;
   timeZone: string | null;
-  strip_costumer_id: string | null;
+  stripe_customer_id: string | null;
   times: string[];
   createdAt: string;
   updateAt: string;

@@ -4,18 +4,18 @@ import { Button } from '@/components/ui/button';
 import { Plan } from '@prisma/client';
 import { createSubscription } from '../_actions/create-subscription';
 
-interface SubscriptionPlanProps {
+interface SubscriptionButtonProps {
   type: Plan;
 }
 
-export function SubscriptionPlan({ type }: SubscriptionPlanProps) {
+export function SubscriptionButton({ type }: SubscriptionButtonProps) {
   async function handleCreateBilling() {
     const response = await createSubscription({ type: type });
   }
 
   return (
     <Button
-      className={`w-full 
+      className={`w-full
         ${type === 'PROFESSIONAL' && 'bg-emerald-500 hover:bg-emerald-400'}`}
       onClick={handleCreateBilling}
     >

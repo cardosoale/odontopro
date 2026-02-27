@@ -1,0 +1,285 @@
+{
+  // =============================================
+  // APARÊNCIA & TEMA
+  // =============================================
+  "workbench.colorTheme": "Dracula Theme",
+  "workbench.iconTheme": "material-icon-theme",
+  "workbench.startupEditor": "none",
+  "window.zoomLevel": 0,
+  "window.titleBarStyle": "custom",
+  "window.customTitleBarVisibility": "windowed",
+
+  // =============================================
+  // MATERIAL ICON THEME
+  // =============================================
+  "material-icon-theme.activeIconPack": "nest",
+  "material-icon-theme.folders.associations": {
+    "infra": "app",
+    "entities": "class",
+    "domain": "class",
+    "schemas": "class",
+    "typeorm": "database",
+    "repositories": "mappings",
+    "http": "container",
+    "migrations": "tools",
+    "modules": "components",
+    "implementations": "core",
+    "dtos": "typescript",
+    "fakes": "mock",
+    "websockets": "pipe",
+    "protos": "pipe",
+    "grpc": "pipe",
+    "providers": "include",
+    "subscribers": "messages",
+    "useCases": "controller",
+    "kafka": "scripts",
+    "mappers": "meta",
+    "_shared": "shared",
+    "eslint-config": "tools",
+    "kube": "kubernetes",
+    "_actions": "redux-actions",
+    "_components": "components",
+    "_data-access": "database"
+  },
+  "material-icon-theme.files.associations": {
+    "ormconfig.json": "database",
+    "tsconfig.json": "tune",
+    "*.proto": "3d",
+    "*.webpack.js": "webpack"
+  },
+  "material-icon-theme.languages.associations": {
+    "dotenv": "tune"
+  },
+
+  // =============================================
+  // EDITOR — FONTE & VISUAL
+  // =============================================
+  "editor.fontFamily": "JetBrains Mono",
+  "editor.fontSize": 14,
+  "editor.fontWeight": "400",
+  "editor.lineHeight": 20,
+  "editor.fontLigatures": true,
+  "editor.minimap.enabled": false,
+  "editor.renderLineHighlight": "gutter",
+  "editor.mouseWheelZoom": true,
+  "editor.cursorBlinking": "smooth",
+  "editor.cursorSmoothCaretAnimation": "on",
+  "editor.smoothScrolling": true,
+  "editor.rulers": [80, 120],
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": "active",
+  "editor.linkedEditing": true, // Renomeia tag de abertura e fechamento juntas (JSX/HTML)
+  "editor.wordWrap": "off",
+  "editor.selectionClipboard": false, // Desabilita middle-click paste (Linux)
+
+  // =============================================
+  // EDITOR — INDENTAÇÃO
+  // =============================================
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": true,
+
+  // =============================================
+  // EDITOR — SUGESTÕES & AUTOCOMPLETE
+  // =============================================
+  "editor.suggestSelection": "first",
+  "editor.acceptSuggestionOnCommitCharacter": true,
+  "editor.snippetSuggestions": "top",
+  "editor.quickSuggestions": {
+    "strings": "on" // Sugestões dentro de strings (útil para Tailwind classes)
+  },
+
+  // =============================================
+  // FORMATAÇÃO — PRETTIER (formatter principal)
+  // =============================================
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": false,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  "prettier.singleQuote": true,
+  "prettier.semi": true,
+  "prettier.trailingComma": "all",
+  "prettier.endOfLine": "lf",
+  "prettier.jsxSingleQuote": true,
+  "prettier.arrowParens": "always",
+  "prettier.printWidth": 80,
+  "prettier.tabWidth": 2,
+
+  // =============================================
+  // ESLINT
+  // =============================================
+  "eslint.format.enable": false, // Prettier cuida da formatação
+  "eslint.codeActionsOnSave.mode": "all",
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+
+  // =============================================
+  // CODE ACTIONS ON SAVE
+  // =============================================
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "always",
+    "source.fixAll": "always",
+    "source.organizeImports": "never", // Evita conflito com ESLint import sorting
+    "source.addMissingImports": "always" // Adiciona imports faltantes ao salvar
+  },
+
+  // =============================================
+  // TYPESCRIPT & JAVASCRIPT
+  // =============================================
+  "typescript.suggest.autoImports": true,
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "typescript.preferences.importModuleSpecifier": "non-relative", // Usa paths do tsconfig (ex: @/...)
+  "typescript.preferences.quoteStyle": "single",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.inlayHints.parameterNames.enabled": "literals",
+  "typescript.inlayHints.functionLikeReturnTypes.enabled": false,
+  "typescript.preferences.preferTypeOnlyAutoImports": true,
+
+  "javascript.suggest.autoImports": true,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "javascript.preferences.quoteStyle": "single",
+
+  // =============================================
+  // FORMATADORES POR LINGUAGEM
+  // =============================================
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.wordWrap": "on"
+  },
+  "[dockercompose]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma",
+    "editor.formatOnSave": true
+  },
+
+  // =============================================
+  // EMMET (JSX/TSX support)
+  // =============================================
+  "emmet.syntaxProfiles": {
+    "javascript": "jsx"
+  },
+  "emmet.includeLanguages": {
+    "javascript": "javascriptreact",
+    "typescript": "typescriptreact"
+  },
+  "emmet.triggerExpansionOnTab": true,
+
+  // =============================================
+  // TAILWIND CSS
+  // =============================================
+  "tailwindCSS.emmetCompletions": true,
+  "tailwindCSS.experimental.classRegex": [
+    ["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
+    ["cn\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+  ],
+
+  // =============================================
+  // FILES & EXPLORER
+  // =============================================
+  "explorer.compactFolders": false,
+  "explorer.confirmDragAndDrop": false,
+  "explorer.confirmDelete": false,
+  "breadcrumbs.enabled": true,
+
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true, // Quebra de linha no final do arquivo
+  "files.trimFinalNewlines": true,
+  "files.eol": "\n",
+  "files.associations": {
+    "*.css": "tailwindcss",
+    "*.tsx": "typescriptreact"
+  },
+  "files.exclude": {
+    "**/.next": true,
+    "**/node_modules": true
+  },
+
+  // =============================================
+  // TERMINAL
+  // =============================================
+  "terminal.integrated.fontSize": 15,
+  "terminal.integrated.cursorBlinking": true,
+  "terminal.integrated.smoothScrolling": true,
+
+  // =============================================
+  // GIT
+  // =============================================
+  "git.enableSmartCommit": true,
+  "git.autofetch": true,
+  "git.confirmSync": false,
+
+  // =============================================
+  // DIFF EDITOR
+  // =============================================
+  "diffEditor.ignoreTrimWhitespace": false,
+
+  // =============================================
+  // SEGURANÇA & MISC
+  // =============================================
+  "security.workspace.trust.untrustedFiles": "open",
+  "extensions.ignoreRecommendations": false,
+
+  // =============================================
+  // EXTENSIONS — CODESNAP
+  // =============================================
+  "codesnap.backgroundColor": "transparent",
+  "codesnap.transparentBackground": true,
+  "codesnap.boxShadow": "0 0 0",
+
+  // =============================================
+  // EXTENSIONS — LIVE SERVER
+  // =============================================
+  "liveServer.settings.donotVerifyTags": true,
+  "liveServer.settings.donotShowInfoMsg": true,
+
+  // =============================================
+  // EXTENSIONS — TODO TREE
+  // =============================================
+  "todo-tree.regex.regex": "(//|#|<!--|;|/\\*|^|^\\s*(-|\\d+.))\\s*($TAGS)",
+
+  // =============================================
+  // COPILOT & AI
+  // =============================================
+  "github.copilot.enable": {
+    "*": false,
+    "plaintext": false,
+    "markdown": false,
+    "scminput": false
+  },
+  "chat.unifiedAgentsBar.enabled": true,
+  "chat.viewSessions.orientation": "stacked"
+}
