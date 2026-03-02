@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { PencilIcon, PlusIcon, XIcon } from 'lucide-react';
 import { DialogServices } from './dialog-services';
-import { Service } from '@/generated/prisma/client';
+import { Service } from '@prisma/client';
 import { formatCurrency } from '@/utils/format-currency';
 import { deleteService } from '../_actions/delete-service';
 import { toast } from 'sonner';
