@@ -56,7 +56,7 @@ export async function createSubscription({ type }: CreateSubscriptionProps) {
   try {
     const stripeCheckoutsession = await stripe.checkout.sessions.create({
       customer: customerId,
-      payment_method_types: ['card', 'pix'],
+      payment_method_types: ['card'],
       billing_address_collection: 'required',
       line_items: [
         {
@@ -78,6 +78,7 @@ export async function createSubscription({ type }: CreateSubscriptionProps) {
 
     return {
       sessionId: stripeCheckoutsession.id,
+      url: stripeCheckoutsession.url || '',
     };
   } catch (err) {
     console.log('Erro ao criar checkout:', err);

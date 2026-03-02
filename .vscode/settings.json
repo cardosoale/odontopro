@@ -275,10 +275,11 @@
   // COPILOT & AI
   // =============================================
   "github.copilot.enable": {
-    "*": false,
+    "*": true,
     "plaintext": false,
     "markdown": false,
-    "scminput": false
+    "scminput": false,
+    "typescript": true
   },
   "chat.unifiedAgentsBar.enabled": true,
   "chat.viewSessions.orientation": "stacked"
