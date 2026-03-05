@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { Plan } from '@prisma/client';
 import { createSubscription } from '../_actions/create-subscription';
-import { getStripeJs } from '@/lib/stripe-js';
+import { getStripeJs } from '@/utils/stripe-js';
 import { toast } from 'sonner';
 
 interface SubscriptionButtonProps {
