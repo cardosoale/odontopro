@@ -68,7 +68,12 @@ export async function createSubscription({ type }: CreateSubscriptionProps) {
         },
       ],
       metadata: {
-        type: type,
+        plan: type,
+      },
+      subscription_data: {
+        metadata: {
+          plan: type,
+        },
       },
       mode: 'subscription',
       allow_promotion_codes: true,

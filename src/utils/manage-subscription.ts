@@ -1,5 +1,4 @@
 import prisma from '@/lib/prisma';
-import Stripe from 'stripe';
 import { stripe } from '@/utils/stripe';
 import type { Plan } from '@prisma/client';
 
@@ -31,7 +30,7 @@ export async function manageSubscription(
   createAction: boolean,
   deleteAction: boolean,
   type?: Plan,
-): Promise<Response | void> {
+): Promise<void> {
   const findUser = await prisma.user.findFirst({
     where: {
       stripe_customer_id: customerId,
@@ -39,7 +38,7 @@ export async function manageSubscription(
   });
 
   if (!findUser) {
-    return Response.json({ error: 'User not found' }, { status: 404 });
+    throw new Error(`User not found for Stripe customer ${customerId}`);
   }
 
   const subscription = await stripe.subscriptions.retrieve(subscriptionId);
@@ -51,30 +50,20 @@ export async function manageSubscription(
     plan: type ?? 'BASIC',
   };
 
-  try {
-    if (subscriptionId && deleteAction) {
-      await prisma.subscription.delete({
-        where: {
-          id: subscriptionData.id,
-        },
-      });
-      return;
-    }
-
-    if (createAction) {
-      await prisma.subscription.create({
-        data: subscriptionData,
-      });
-      return;
-    }
-
-    await prisma.subscription.update({
+  if (subscriptionId && deleteAction) {
+    await prisma.subscription.deleteMany({
       where: {
-        id: subscriptionData.id,
+        OR: [{ id: subscriptionData.id }, { userId: findUser.id }],
       },
-      data: subscriptionData,
     });
-  } catch (error) {
-    console.error('Error managing subscription:', error);
+    return;
   }
+
+  await prisma.subscription.upsert({
+    where: {
+      userId: findUser.id,
+    },
+    update: subscriptionData,
+    create: subscriptionData,
+  });
 }
