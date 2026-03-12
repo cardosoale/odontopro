@@ -1,5 +1,6 @@
 'use client';
 
+import { createPortalCustomer } from '@/app/(panel)/dashboard/plans/_actions/create-portal-customer';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -11,6 +12,7 @@ import {
 } from '@/components/ui/card';
 import { subscriptionPlans } from '@/utils/plans';
 import type { Subscription } from '@prisma/client';
+import { toast } from 'sonner';
 
 interface SubscriptionDetailProps {
   subscription: Subscription;
@@ -18,7 +20,13 @@ interface SubscriptionDetailProps {
 
 export function SubscriptionDetail({ subscription }: SubscriptionDetailProps) {
   async function handleManageSubscription() {
-    console.log('Teste');
+    const portal = await createPortalCustomer();
+
+    if (portal.error) {
+      toast.error('Ocorreu um erro ao carregar o portal de assinaturas');
+    }
+
+    window.location.href = portal.sessionId;
   }
 
   const subscriptionInfo = subscriptionPlans.find(
