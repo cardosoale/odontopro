@@ -1,23 +1,33 @@
-'use client';
+"use client";
 
-import { use, useState } from 'react';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { PencilIcon, PlusIcon, XIcon } from 'lucide-react';
-import { DialogServices } from './dialog-services';
-import { Service } from '@prisma/client';
-import { formatCurrency } from '@/utils/format-currency';
-import { deleteService } from '../_actions/delete-service';
-import { toast } from 'sonner';
+import { use, useState } from "react";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { PencilIcon, PlusIcon, XIcon } from "lucide-react";
+import { DialogServices } from "./dialog-services";
+import { Service } from "@prisma/client";
+import { formatCurrency } from "@/utils/format-currency";
+import { deleteService } from "../_actions/delete-service";
+import { toast } from "sonner";
+import { ResultPermissionProps } from "@/utils/permissions/can-permission";
+import Link from "next/link";
 
 interface ServicesListProps {
   services: Service[];
+  permissions: ResultPermissionProps;
 }
 
-export default function ServicesList({ services }: ServicesListProps) {
+export default function ServicesList({
+  services,
+  permissions,
+}: ServicesListProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editService, setEditService] = useState<null | Service>(null);
+
+  const serviceList = permissions.hasPermission
+    ? services
+    : services.slice(0, 3);
 
   function handleOpenChange(open: boolean) {
     setIsDialogOpen(open);
@@ -34,17 +44,17 @@ export default function ServicesList({ services }: ServicesListProps) {
       return;
     }
 
-    toast.success('Serviço deletado com sucesso!');
+    toast.success("Serviço deletado com sucesso!");
   }
 
   const handleOnDeleteClick = (serviceId: string) => {
-    toast('Tem certeza que deseja deletar este serviço?', {
+    toast("Tem certeza que deseja deletar este serviço?", {
       action: {
-        label: 'Confirmar',
+        label: "Confirmar",
         onClick: () => handleOnDelete(serviceId),
       },
       cancel: {
-        label: 'Cancelar',
+        label: "Cancelar",
         onClick: () => {},
       },
       duration: Infinity,
@@ -59,17 +69,24 @@ export default function ServicesList({ services }: ServicesListProps) {
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={handleOpenChange}>
-      <section className='mx-auto'>
+      <section className="mx-auto">
         <Card>
-          <CardHeader className='flex flex-row justify-between items-center space-y-0 pb-2'>
-            <CardTitle className='text-xl md:text-2xl font-bold'>
+          <CardHeader className="flex flex-row justify-between items-center space-y-0 pb-2">
+            <CardTitle className="text-xl md:text-2xl font-bold">
               Serviços
             </CardTitle>
-            <DialogTrigger asChild>
-              <Button>
-                <PlusIcon className='w-4 h-4' />
-              </Button>
-            </DialogTrigger>
+            {permissions.hasPermission && (
+              <DialogTrigger asChild>
+                <Button>
+                  <PlusIcon className="w-4 h-4" />
+                </Button>
+              </DialogTrigger>
+            )}
+            {!permissions.hasPermission && (
+              <Link href="/dashboard/plans" className="text-red-500">
+                Limite de planos atingido.
+              </Link>
+            )}
             <DialogContent onInteractOutside={(e) => e.preventDefault()}>
               <DialogServices
                 serviceId={editService ? editService.id : undefined}
@@ -79,7 +96,7 @@ export default function ServicesList({ services }: ServicesListProps) {
                         name: editService.name,
                         price: (editService.price / 100)
                           .toFixed(2)
-                          .replace('.', ','),
+                          .replace(".", ","),
                         hour: Math.floor(editService.duration / 60).toString(),
                         minutes: (editService.duration % 60).toString(),
                       }
@@ -89,22 +106,22 @@ export default function ServicesList({ services }: ServicesListProps) {
             </DialogContent>
           </CardHeader>
           <CardContent>
-            <section className='space-y-4 mt-5'>
-              {services.map((service) => (
+            <section className="space-y-4 mt-5">
+              {serviceList.map((service) => (
                 <article
                   key={service.id}
-                  className='flex flex-row justify-between items-center'
+                  className="flex flex-row justify-between items-center"
                 >
-                  <div className='flex items-center space-x-2'>
-                    <span className='font-medium'>{service.name}</span>
-                    <span className='text-gray-500'> - </span>
-                    <span className='text-gray-700'>
+                  <div className="flex items-center space-x-2">
+                    <span className="font-medium">{service.name}</span>
+                    <span className="text-gray-500"> - </span>
+                    <span className="text-gray-700">
                       {formatCurrency(service.price / 100)}
                     </span>
                   </div>
-                  <div className='flex items-center space-x-2'>
+                  <div className="flex items-center space-x-2">
                     <Button
-                      className='w-4 h-4 bg-white text-black  hover:bg-white hover:text-blue-500'
+                      className="w-4 h-4 bg-white text-black  hover:bg-white hover:text-blue-500"
                       onClick={() => {
                         handleEditService(service);
                       }}
@@ -112,7 +129,7 @@ export default function ServicesList({ services }: ServicesListProps) {
                       <PencilIcon />
                     </Button>
                     <Button
-                      className='w-4 h-4 bg-white text-black hover:bg-white hover:text-red-500'
+                      className="w-4 h-4 bg-white text-black hover:bg-white hover:text-red-500"
                       onClick={() => handleOnDeleteClick(service.id)}
                     >
                       <XIcon />

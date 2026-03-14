@@ -1,6 +1,8 @@
 'use server';
 
 import prisma from '@/lib/prisma';
+import type { ResultPermissionProps } from '@/utils/permissions/can-permission';
+import { checkSubscriptionExpired } from '@/utils/permissions/check-subscription-expired';
 import { getPlan } from '@/utils/permissions/get-plans';
 import { PLANS } from '@/utils/plans';
 import type { Subscription } from '@prisma/client';
@@ -8,8 +10,8 @@ import type { Session } from 'next-auth';
 
 export async function canCreateService(
   subscription: Subscription | null,
-  session: Session | null,
-) {
+  session: Session,
+): Promise<ResultPermissionProps> {
   try {
     const serviceCount = await prisma.service.count({
       where: {
@@ -28,13 +30,18 @@ export async function canCreateService(
           serviceCount < planLimits.maxServices,
         planId: subscription.plan,
         expired: false,
-        plan: PLANS,
+        plan: PLANS[subscription.plan],
       };
     }
-  } catch (error) {
-    console.error(
-      'Error occurred while checking service creation permissions:',
-      error,
-    );
+    const checkUserLimit = await checkSubscriptionExpired(session);
+
+    return checkUserLimit;
+  } catch (err) {
+    return {
+      hasPermission: false,
+      planId: 'EXPIRED',
+      expired: true,
+      plan: null,
+    };
   }
 }
