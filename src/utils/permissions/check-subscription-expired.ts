@@ -1,19 +1,18 @@
-'use server';
-import type { ResultPermissionProps } from '@/utils/permissions/can-permission';
-import { addDays, isAfter } from 'date-fns';
-import { Session } from 'next-auth';
-
-const TRIAL_DAYS = 7;
+"use server";
+import type { ResultPermissionProps } from "@/utils/permissions/can-permission";
+import { addDays, isAfter } from "date-fns";
+import { Session } from "next-auth";
+import { TRIAL_DAYS } from "./trial-limits";
 
 export async function checkSubscriptionExpired(
   session: Session,
 ): Promise<ResultPermissionProps> {
-  const trialDaysEnd = addDays(session.user.createdAt!, 7);
+  const trialDaysEnd = addDays(session.user.createdAt!, TRIAL_DAYS);
 
   if (isAfter(new Date(), trialDaysEnd)) {
     return {
       hasPermission: false,
-      planId: 'EXPIRED',
+      planId: "EXPIRED",
       expired: true,
       plan: null,
     };
@@ -21,7 +20,7 @@ export async function checkSubscriptionExpired(
 
   return {
     hasPermission: true,
-    planId: 'TRIAL',
+    planId: "TRIAL",
     expired: false,
     plan: null,
   };
