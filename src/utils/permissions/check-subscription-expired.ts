@@ -3,6 +3,7 @@ import type { ResultPermissionProps } from "@/utils/permissions/can-permission";
 import { addDays, isAfter } from "date-fns";
 import { Session } from "next-auth";
 import { TRIAL_DAYS } from "./trial-limits";
+import { getPlan } from "@/utils/permissions/get-plans";
 
 export async function checkSubscriptionExpired(
   session: Session,
@@ -18,10 +19,12 @@ export async function checkSubscriptionExpired(
     };
   }
 
+  const plan = await getPlan("TRIAL" as any);
+
   return {
     hasPermission: true,
     planId: "TRIAL",
     expired: false,
-    plan: null,
+    plan,
   };
 }
