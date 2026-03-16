@@ -1,9 +1,9 @@
-'use server';
+"use server";
 
-import { auth } from '@/lib/auth';
-import prisma from '@/lib/prisma';
-import { stripe } from '@/utils/stripe';
-import { Plan } from '@prisma/client';
+import { auth } from "@/lib/auth";
+import prisma from "@/lib/prisma";
+import { stripe } from "@/utils/stripe";
+import { Plan } from "@prisma/client";
 
 interface CreateSubscriptionProps {
   type: Plan;
@@ -16,8 +16,8 @@ export async function createSubscription({ type }: CreateSubscriptionProps) {
 
   if (!userId) {
     return {
-      userId: '',
-      error: 'Falha ao ativar plano',
+      userId: "",
+      error: "Falha ao ativar plano",
     };
   }
 
@@ -29,8 +29,8 @@ export async function createSubscription({ type }: CreateSubscriptionProps) {
 
   if (!findUser) {
     return {
-      sessionId: '',
-      error: 'Falha ao ativar plano',
+      sessionId: "",
+      error: "Falha ao ativar plano",
     };
   }
 
@@ -56,12 +56,12 @@ export async function createSubscription({ type }: CreateSubscriptionProps) {
   try {
     const stripeCheckoutsession = await stripe.checkout.sessions.create({
       customer: customerId,
-      payment_method_types: ['card'],
-      billing_address_collection: 'required',
+      payment_method_types: ["card"],
+      billing_address_collection: "required",
       line_items: [
         {
           price:
-            type === 'BASIC'
+            type === "BASIC"
               ? process.env.STRIPE_PRICE_BASIC
               : process.env.STRIPE_PRICE_PROFESSIONAL,
           quantity: 1,
@@ -75,7 +75,7 @@ export async function createSubscription({ type }: CreateSubscriptionProps) {
           plan: type,
         },
       },
-      mode: 'subscription',
+      mode: "subscription",
       allow_promotion_codes: true,
       success_url: process.env.STRIPE_SUCCESS_URL,
       cancel_url: process.env.STRIPE_CANCEL_URL,
@@ -83,13 +83,12 @@ export async function createSubscription({ type }: CreateSubscriptionProps) {
 
     return {
       sessionId: stripeCheckoutsession.id,
-      url: stripeCheckoutsession.url || '',
+      url: stripeCheckoutsession.url || "",
     };
   } catch (err) {
-    console.log('Erro ao criar checkout:', err);
     return {
-      sessionId: '',
-      error: 'Falha ao ativar plano',
+      sessionId: "",
+      error: "Falha ao ativar plano",
     };
   }
 }

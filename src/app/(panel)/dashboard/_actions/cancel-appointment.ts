@@ -1,12 +1,12 @@
-'use server';
+"use server";
 
-import { auth } from '@/lib/auth';
-import prisma from '@/lib/prisma';
-import { revalidatePath } from 'next/cache';
-import z from 'zod';
+import { auth } from "@/lib/auth";
+import prisma from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
+import z from "zod";
 
 const formSchema = z.object({
-  appointmentId: z.string().min(1, 'Agendamento não encontrado'),
+  appointmentId: z.string().min(1, "Agendamento não encontrado"),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
@@ -24,7 +24,7 @@ export async function cancelAppointment(formData: FormSchema) {
 
   if (!session?.user.id) {
     return {
-      error: 'Usuário não encontrado',
+      error: "Usuário não encontrado",
     };
   }
 
@@ -36,15 +36,14 @@ export async function cancelAppointment(formData: FormSchema) {
       },
     });
 
-    revalidatePath('/dashboard');
+    revalidatePath("/dashboard");
 
     return {
-      data: 'Agendamento cancelado com sucesso',
+      data: "Agendamento cancelado com sucesso",
     };
   } catch (err) {
-    // console.log(err)
     return {
-      error: 'Erro ao deletar agendamento',
+      error: "Erro ao deletar agendamento",
     };
   }
 }

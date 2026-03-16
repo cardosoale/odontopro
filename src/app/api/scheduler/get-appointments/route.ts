@@ -1,16 +1,16 @@
-import prisma from '@/lib/prisma';
-import { NextRequest, NextResponse } from 'next/server';
+import prisma from "@/lib/prisma";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
 
-  const userId = searchParams.get('userId');
-  const dateParam = searchParams.get('date');
+  const userId = searchParams.get("userId");
+  const dateParam = searchParams.get("date");
 
-  if (!userId || userId === 'null' || !dateParam || dateParam === 'null') {
+  if (!userId || userId === "null" || !dateParam || dateParam === "null") {
     return NextResponse.json(
       {
-        error: 'Nenhum agendamento encontrado',
+        error: "Nenhum agendamento encontrado",
       },
       {
         status: 400,
@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const [year, month, day] = dateParam.split('-').map(Number);
+    const [year, month, day] = dateParam.split("-").map(Number);
     const startDate = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
     const endDate = new Date(Date.UTC(year, month - 1, day, 23, 59, 59, 999));
 
@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
     if (!user) {
       return NextResponse.json(
         {
-          error: 'Nenhum agendamento encontrado',
+          error: "Nenhum agendamento encontrado",
         },
         {
           status: 400,
@@ -72,14 +72,11 @@ export async function GET(req: NextRequest) {
 
     const blockedTimes = Array.from(blockedSlots);
 
-    console.log('blockedTimes: ', blockedTimes);
-
     return NextResponse.json(blockedTimes);
   } catch (err) {
-    console.log(err);
     return NextResponse.json(
       {
-        error: 'Nenhum agendamento encontrado',
+        error: "Nenhum agendamento encontrado",
       },
       {
         status: 400,

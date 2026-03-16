@@ -1,6 +1,6 @@
-'use server';
+"use server";
 
-import prisma from '@/lib/prisma';
+import prisma from "@/lib/prisma";
 
 export async function getReminder({ userId }: { userId: string }) {
   if (!userId) return [];
@@ -13,7 +13,6 @@ export async function getReminder({ userId }: { userId: string }) {
     });
     return reminders;
   } catch (err) {
-    console.log(err);
     return [];
   }
 }

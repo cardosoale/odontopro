@@ -3,11 +3,16 @@ export type PlanDetailsProps = {
 };
 
 export type PlanProps = {
+  TRIAL: PlanDetailsProps;
   BASIC: PlanDetailsProps;
   PROFESSIONAL: PlanDetailsProps;
 };
 
 export const PLANS: PlanProps = {
+  TRIAL: {
+    // limite para usuários em trial — altere conforme necessário
+    maxServices: 3,
+  },
   BASIC: {
     maxServices: 3,
   },

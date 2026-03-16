@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import imgTest from '../../../../../../public/foto1.png';
-import { MapPinIcon } from 'lucide-react';
-import { Prisma } from '@prisma/client';
-import { AppointmentFormData, useAppointmentForm } from './scheduler-form';
+import Image from "next/image";
+import imgTest from "../../../../../../public/foto1.png";
+import { MapPinIcon } from "lucide-react";
+import { Prisma } from "@prisma/client";
+import { AppointmentFormData, useAppointmentForm } from "./scheduler-form";
 import {
   Form,
   FormControl,
@@ -12,25 +12,25 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { formatPhone } from '@/utils/format-phone';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { formatPhone } from "@/utils/format-phone";
 
-import 'react-datepicker/dist/react-datepicker.css';
-import { DateTimePicker } from './date-picker';
+import "react-datepicker/dist/react-datepicker.css";
+import { DateTimePicker } from "./date-picker";
 import {
   Select,
   SelectValue,
   SelectTrigger,
   SelectContent,
   SelectItem,
-} from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import { use, useCallback, useEffect, useState } from 'react';
-import { Label } from '@/components/ui/label';
-import { SchedulerTimeList } from './scheduler-time-list';
-import { toast } from 'sonner';
-import { createNewAppointment } from '../_actions/create-appointment';
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { use, useCallback, useEffect, useState } from "react";
+import { Label } from "@/components/ui/label";
+import { SchedulerTimeList } from "./scheduler-time-list";
+import { toast } from "sonner";
+import { createNewAppointment } from "../_actions/create-appointment";
 
 type UserWhihServiceAndSubscription = Prisma.UserGetPayload<{
   include: {
@@ -50,10 +50,10 @@ export interface TimeSlot {
 export function SchedulerContent({ clinic }: SchedulerContentProps) {
   const form = useAppointmentForm();
 
-  const selectedDate = form.watch('date');
-  const selectedServiceId = form.watch('serviceId');
+  const selectedDate = form.watch("date");
+  const selectedServiceId = form.watch("serviceId");
 
-  const [selectedTime, setSelectedTime] = useState('');
+  const [selectedTime, setSelectedTime] = useState("");
   const [availableTimeSlots, setAvailableTimeSlots] = useState<TimeSlot[]>([]);
   const [loadingSlot, setLoadingSlots] = useState(false);
 
@@ -65,7 +65,7 @@ export function SchedulerContent({ clinic }: SchedulerContentProps) {
       setLoadingSlots(true);
 
       try {
-        const dateString = date.toISOString().split('T')[0];
+        const dateString = date.toISOString().split("T")[0];
 
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_URL}/api/scheduler/get-appointments?userId=${clinic.id}&date=${dateString}`,
@@ -76,7 +76,6 @@ export function SchedulerContent({ clinic }: SchedulerContentProps) {
 
         return blockedSlots;
       } catch (err) {
-        console.log(err);
         setLoadingSlots(false);
         return [];
       }
@@ -101,14 +100,14 @@ export function SchedulerContent({ clinic }: SchedulerContentProps) {
           (slot) => slot.time === selectedTime && slot.isAvailable,
         );
 
-        if (!stillAvailable) setSelectedTime('');
+        if (!stillAvailable) setSelectedTime("");
       });
     }
   }, [selectedDate, clinic.times, fetchBlockedTimes, selectedTime]);
 
   async function handleRegisterAppointments(formData: AppointmentFormData) {
     if (!selectedTime) {
-      toast.error('Selecione um horario');
+      toast.error("Selecione um horario");
       return;
     }
     const response = await createNewAppointment({
@@ -126,54 +125,54 @@ export function SchedulerContent({ clinic }: SchedulerContentProps) {
       return;
     }
 
-    toast.success('Consulta agendada com sucesso!');
+    toast.success("Consulta agendada com sucesso!");
     form.reset();
-    setSelectedTime('');
+    setSelectedTime("");
   }
 
   return (
-    <div className='min-h-screen flex flex-col'>
-      <div className='h-32 bg-emerald-500' />
+    <div className="min-h-screen flex flex-col">
+      <div className="h-32 bg-emerald-500" />
 
-      <section className='container mx-auto px-4 -mt-16'>
-        <div className='max-w-2xl mx-auto'>
-          <article className='flex flex-col items-center'>
-            <div className='relative w-48 h-48 rounded-full overflow-hidden border-2 border-white mb-8'>
+      <section className="container mx-auto px-4 -mt-16">
+        <div className="max-w-2xl mx-auto">
+          <article className="flex flex-col items-center">
+            <div className="relative w-48 h-48 rounded-full overflow-hidden border-2 border-white mb-8">
               <Image
                 src={clinic.image ? clinic.image : imgTest}
-                alt='Foto da clinica'
-                className='object-cover'
+                alt="Foto da clinica"
+                className="object-cover"
                 fill
               />
             </div>
 
-            <h1 className='text-2xl font-bold mb-2'>{clinic.name}</h1>
-            <div className='flex items-center gap-1'>
-              <MapPinIcon className='w-5 h-5' />
+            <h1 className="text-2xl font-bold mb-2">{clinic.name}</h1>
+            <div className="flex items-center gap-1">
+              <MapPinIcon className="w-5 h-5" />
               <span>
-                {clinic.address ? clinic.address : 'Endereço não informado'}
+                {clinic.address ? clinic.address : "Endereço não informado"}
               </span>
             </div>
           </article>
         </div>
       </section>
 
-      <section className='mx-auto max-w-2xl w-full mt-6'>
+      <section className="mx-auto max-w-2xl w-full mt-6">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleRegisterAppointments)}
-            className='mx-2 space-y-6 bg-white p-6 border border-md shadow-sm '
+            className="mx-2 space-y-6 bg-white p-6 border border-md shadow-sm "
           >
             <FormField
               control={form.control}
-              name='name'
+              name="name"
               render={({ field }) => (
-                <FormItem className='my-2'>
-                  <FormLabel className='font-semibold'>Nome completo</FormLabel>
+                <FormItem className="my-2">
+                  <FormLabel className="font-semibold">Nome completo</FormLabel>
                   <FormControl>
                     <Input
-                      id='name'
-                      placeholder='Digite seu nome completo'
+                      id="name"
+                      placeholder="Digite seu nome completo"
                       {...field}
                     />
                   </FormControl>
@@ -184,14 +183,14 @@ export function SchedulerContent({ clinic }: SchedulerContentProps) {
 
             <FormField
               control={form.control}
-              name='email'
+              name="email"
               render={({ field }) => (
-                <FormItem className='my-2'>
-                  <FormLabel className='font-semibold'>Email</FormLabel>
+                <FormItem className="my-2">
+                  <FormLabel className="font-semibold">Email</FormLabel>
                   <FormControl>
                     <Input
-                      id='email'
-                      placeholder='Digite seu email'
+                      id="email"
+                      placeholder="Digite seu email"
                       {...field}
                     />
                   </FormControl>
@@ -202,15 +201,15 @@ export function SchedulerContent({ clinic }: SchedulerContentProps) {
 
             <FormField
               control={form.control}
-              name='phone'
+              name="phone"
               render={({ field }) => (
-                <FormItem className='my-2'>
-                  <FormLabel className='font-semibold'>Telefone</FormLabel>
+                <FormItem className="my-2">
+                  <FormLabel className="font-semibold">Telefone</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
-                      id='phone'
-                      placeholder='(XX) XXXXX-XXXX'
+                      id="phone"
+                      placeholder="(XX) XXXXX-XXXX"
                       onChange={(e) => {
                         const formatedValue = formatPhone(e.target.value);
                         field.onChange(formatedValue);
@@ -224,20 +223,20 @@ export function SchedulerContent({ clinic }: SchedulerContentProps) {
 
             <FormField
               control={form.control}
-              name='date'
+              name="date"
               render={({ field }) => (
-                <FormItem className='flex items-center gap-5 space-y-1'>
-                  <FormLabel className='font-semibold'>
+                <FormItem className="flex items-center gap-5 space-y-1">
+                  <FormLabel className="font-semibold">
                     Data do agendamento
                   </FormLabel>
                   <FormControl>
                     <DateTimePicker
                       initialDate={new Date()}
-                      className='w-full rounded border p-2'
+                      className="w-full rounded border p-2"
                       onChange={(date) => {
                         if (date) {
                           field.onChange(date);
-                          setSelectedTime('');
+                          setSelectedTime("");
                         }
                       }}
                     />
@@ -249,22 +248,22 @@ export function SchedulerContent({ clinic }: SchedulerContentProps) {
 
             <FormField
               control={form.control}
-              name='serviceId'
+              name="serviceId"
               render={({ field }) => (
-                <FormItem className='flex items-center gap-5 space-y-1'>
-                  <FormLabel className='font-semibold'>
+                <FormItem className="flex items-center gap-5 space-y-1">
+                  <FormLabel className="font-semibold">
                     Selecione o serviço desejado
                   </FormLabel>
                   <FormControl>
                     <Select
                       onValueChange={(value) => {
                         field.onChange(value);
-                        setSelectedTime('');
+                        setSelectedTime("");
                       }}
                       defaultValue={field.value}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder='Selecione um serviço' />
+                        <SelectValue placeholder="Selecione um serviço" />
                       </SelectTrigger>
                       <SelectContent>
                         {clinic.services.map((service) => (
@@ -282,9 +281,9 @@ export function SchedulerContent({ clinic }: SchedulerContentProps) {
             />
 
             {selectedServiceId && (
-              <div className='space-y-2'>
-                <Label className='font-semibold'>Horarios disponíveis: </Label>
-                <div className='bg-gray-50 p-4 rounnded-lg'>
+              <div className="space-y-2">
+                <Label className="font-semibold">Horarios disponíveis: </Label>
+                <div className="bg-gray-50 p-4 rounnded-lg">
                   {loadingSlot ? (
                     <p>Carregando horários...</p>
                   ) : availableTimeSlots.length === 0 ? (
@@ -316,20 +315,20 @@ export function SchedulerContent({ clinic }: SchedulerContentProps) {
 
             {clinic.status ? (
               <Button
-                type='submit'
+                type="submit"
                 disabled={
-                  !form.watch('date') ||
-                  !form.watch('serviceId') ||
-                  !form.watch('name') ||
-                  !form.watch('email') ||
-                  !form.watch('phone')
+                  !form.watch("date") ||
+                  !form.watch("serviceId") ||
+                  !form.watch("name") ||
+                  !form.watch("email") ||
+                  !form.watch("phone")
                 }
-                className='w-full bg-emerald-500 hover:bg-emerald-400 select-none'
+                className="w-full bg-emerald-500 hover:bg-emerald-400 select-none"
               >
                 Confirmar agendamento
               </Button>
             ) : (
-              <p className='bg-red-400 text-white w-full rounded-md px-4 py-2 text-center'>
+              <p className="bg-red-400 text-white w-full rounded-md px-4 py-2 text-center">
                 Clinica Inativa
               </p>
             )}

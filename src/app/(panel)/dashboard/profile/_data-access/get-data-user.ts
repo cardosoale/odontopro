@@ -1,6 +1,6 @@
-'use server';
+"use server";
 
-import prisma from '@/lib/prisma';
+import prisma from "@/lib/prisma";
 
 interface GetUserDataProps {
   userid: string;
@@ -21,7 +21,6 @@ export async function getUserData({ userid }: GetUserDataProps) {
     if (!user) return null;
     return user;
   } catch (err) {
-    console.log(err);
     return null;
   }
 }

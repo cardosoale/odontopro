@@ -62,7 +62,6 @@ export default function ServicesList({
   };
 
   function handleEditService(service: Service) {
-    console.log(service);
     setEditService(service);
     setIsDialogOpen(true);
   }

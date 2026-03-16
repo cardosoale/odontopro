@@ -1,12 +1,12 @@
-'use server';
+"use server";
 
-import { auth } from '@/lib/auth';
-import prisma from '@/lib/prisma';
-import { revalidatePath } from 'next/cache';
-import { z } from 'zod';
+import { auth } from "@/lib/auth";
+import prisma from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
+import { z } from "zod";
 
 const formSchema = z.object({
-  name: z.string().min(1, { message: 'Nome é obrigatório' }),
+  name: z.string().min(1, { message: "Nome é obrigatório" }),
   address: z.string().optional(),
   phone: z.string().optional(),
   status: z.boolean(),
@@ -21,7 +21,7 @@ export async function updateProfile(formData: FormSchemaType) {
 
   if (!session?.user?.id) {
     return {
-      error: 'Usuário não encontrado',
+      error: "Usuário não encontrado",
     };
   }
 
@@ -29,7 +29,7 @@ export async function updateProfile(formData: FormSchemaType) {
 
   if (!schema.success) {
     return {
-      error: 'Dados inválidos',
+      error: "Dados inválidos",
     };
   }
 
@@ -48,15 +48,14 @@ export async function updateProfile(formData: FormSchemaType) {
       },
     });
 
-    revalidatePath('/dashboard/profile');
+    revalidatePath("/dashboard/profile");
 
     return {
-      data: 'Perfil atualizado com sucesso',
+      data: "Perfil atualizado com sucesso",
     };
   } catch (error: any) {
-    console.log(error);
     return {
-      error: 'Erro ao atualizar perfil',
+      error: "Erro ao atualizar perfil",
     };
   }
 }

@@ -4,10 +4,13 @@ import { addDays, isAfter } from "date-fns";
 import { Session } from "next-auth";
 import { TRIAL_DAYS } from "./trial-limits";
 import { getPlan } from "@/utils/permissions/get-plans";
+import { PLANS } from "@/utils/plans";
 
 export async function checkSubscriptionExpired(
   session: Session,
 ): Promise<ResultPermissionProps> {
+  // Debug: log session and createdAt to ensure correct values
+
   const trialDaysEnd = addDays(session.user.createdAt!, TRIAL_DAYS);
 
   if (isAfter(new Date(), trialDaysEnd)) {
@@ -19,7 +22,7 @@ export async function checkSubscriptionExpired(
     };
   }
 
-  const plan = await getPlan("TRIAL" as any);
+  const plan = (await getPlan("TRIAL")) ?? PLANS.TRIAL;
 
   return {
     hasPermission: true,

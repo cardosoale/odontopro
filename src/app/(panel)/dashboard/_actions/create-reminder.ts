@@ -1,12 +1,12 @@
-'use server';
+"use server";
 
-import { auth } from '@/lib/auth';
-import prisma from '@/lib/prisma';
-import { revalidatePath } from 'next/cache';
-import { z } from 'zod';
+import { auth } from "@/lib/auth";
+import prisma from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
+import { z } from "zod";
 
 const formSchema = z.object({
-  description: z.string().min(10, 'Descrição do lembrete é obrigatório'),
+  description: z.string().min(10, "Descrição do lembrete é obrigatório"),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
@@ -16,7 +16,7 @@ export async function createReminder(formData: FormSchema) {
 
   if (!session?.user?.id) {
     return {
-      error: 'Falha ao cadastrar usuário.',
+      error: "Falha ao cadastrar usuário.",
     };
   }
 
@@ -36,15 +36,14 @@ export async function createReminder(formData: FormSchema) {
       },
     });
 
-    revalidatePath('/dashboard');
+    revalidatePath("/dashboard");
 
     return {
-      data: 'Lembrete cadastrado com sucesso',
+      data: "Lembrete cadastrado com sucesso",
     };
   } catch (err) {
-    console.log('Erro:', err);
     return {
-      error: 'Falha ao cadastrar lembrete',
+      error: "Falha ao cadastrar lembrete",
     };
   }
 }

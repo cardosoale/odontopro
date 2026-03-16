@@ -1,7 +1,7 @@
-'use server';
+"use server";
 
-import prisma from '@/lib/prisma';
-import { tr } from 'zod/v4/locales';
+import prisma from "@/lib/prisma";
+import { tr } from "zod/v4/locales";
 
 export async function getTimesClinic({ userId }: { userId: string }) {
   if (!userId) {
@@ -32,7 +32,6 @@ export async function getTimesClinic({ userId }: { userId: string }) {
       userId: user.id,
     };
   } catch (err) {
-    console.log(err);
     return {
       times: [],
     };
