@@ -1,0 +1,93 @@
+{
+  "languages": {
+    "TypeScript": {
+      "language_servers": ["vtsls", "..."],
+      "formatter": "prettier",
+      "prettier": {
+        "allowed": true,
+      },
+      "format_on_save": "on",
+    },
+    "TSX": {
+      "language_servers": ["vtsls", "..."],
+      "formatter": "prettier",
+      "prettier": {
+        "allowed": true,
+      },
+      "format_on_save": "on",
+    },
+    "JavaScript": {
+      "language_servers": ["vtsls", "..."],
+      "formatter": "prettier",
+      "prettier": {
+        "allowed": true,
+      },
+      "format_on_save": "on",
+    },
+    "Prisma": {
+      "formatter": "prettier",
+      "prettier": {
+        "allowed": true,
+      },
+      "format_on_save": "on",
+    },
+  },
+  "lsp": {
+    "vtsls": {
+      "settings": {
+        "typescript": {
+          "tsserver": {
+            "maxTsServerMemory": 8092,
+          },
+          "preferences": {
+            "quoteStyle": "single",
+            "importModuleSpecifier": "non-relative",
+          },
+          "inlayHints": {
+            "parameterNames": {
+              "enabled": "literals",
+              "suppressWhenArgumentMatchesName": true,
+            },
+            "parameterTypes": {
+              "enabled": true,
+            },
+            "variableTypes": {
+              "enabled": true,
+              "suppressWhenTypeMatchesName": true,
+            },
+            "propertyDeclarationTypes": {
+              "enabled": true,
+            },
+            "functionLikeReturnTypes": {
+              "enabled": true,
+            },
+            "enumMemberValues": {
+              "enabled": true,
+            },
+          },
+        },
+        "javascript": {
+          "preferences": {
+            "quoteStyle": "single",
+          },
+        },
+      },
+    },
+    "tailwindcss-language-server": {
+      "settings": {
+        "experimental": {
+          "classRegex": [
+            "className\\s*=\\s*['\"]([^'\"]*)['\"]",
+            "cn\\(([^)]*)\\)",
+            "clsx\\(([^)]*)\\)",
+            "cva\\(([^)]*)\\)",
+          ],
+        },
+      },
+    },
+  },
+  "inlay_hints": {
+    "enabled": true,
+  },
+  
+}
