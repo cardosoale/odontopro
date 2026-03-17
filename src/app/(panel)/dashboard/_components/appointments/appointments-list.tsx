@@ -43,13 +43,17 @@ export function AppointmentsList({ times }: AppointmentsListProps) {
         activeDate = today;
       }
 
-      const url = `${process.env.NEXT_PUBLIC_URL}/api/clinic/appointments?date=${activeDate}`;
+      const url = `/api/clinic/appointments?date=${activeDate}`;
 
       const response = await fetch(url);
 
-      const json = (await response.json()) as AppointmentsWhithService[];
+      if (!response.ok) {
+        const text = await response.text();
+        console.log("Failed fetching appointments:", response.status, text);
+        return [];
+      }
 
-      if (!response.ok) return [];
+      const json = (await response.json()) as AppointmentsWhithService[];
 
       return json;
     },
@@ -88,7 +92,9 @@ export function AppointmentsList({ times }: AppointmentsListProps) {
             return;
           }
 
-          queryClient.invalidateQueries({ queryKey: ["get-appointments"] });
+          queryClient.invalidateQueries({
+            queryKey: ["get-appointments", date],
+          });
           await refetch();
           toast.success("Agendamento cancelado com sucesso");
         },

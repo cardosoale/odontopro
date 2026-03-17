@@ -1,30 +1,36 @@
-'use client';
+"use client";
 
-import { format } from 'date-fns';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { format } from "date-fns";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export function ButtonPickerAppointment() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const [selectedDate, setSelectedDate] = useState("");
 
-  const [selectedDate, setSelectedDate] = useState(
-    format(new Date(), 'yyyy-MM-dd'),
-  );
+  // Initialize with current date or from URL param
+  useEffect(() => {
+    const dateFromUrl = searchParams.get("date");
+    const today = format(new Date(), "yyyy-MM-dd");
+    setSelectedDate(dateFromUrl || today);
+  }, [searchParams]);
 
   function handleChangeDate(event: React.ChangeEvent<HTMLInputElement>) {
-    setSelectedDate(event.target.value);
+    const newDate = event.target.value;
+    setSelectedDate(newDate);
 
+    // Update URL with new date
     const url = new URL(window.location.href);
-
-    url.searchParams.set('date', event.target.value);
+    url.searchParams.set("date", newDate);
     router.push(url.toString());
   }
 
   return (
     <input
-      type='date'
-      id='start'
-      className='border-2 px-2 py-1 rounded-md text-sm md:text-base'
+      type="date"
+      id="appointmentDatePicker"
+      className="border-2 px-2 py-1 rounded-md text-sm md:text-base"
       value={selectedDate}
       onChange={handleChangeDate}
     />

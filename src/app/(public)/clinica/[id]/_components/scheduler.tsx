@@ -85,23 +85,36 @@ export function SchedulerContent({ clinic }: SchedulerContentProps) {
 
   useEffect(() => {
     if (selectedDate) {
-      fetchBlockedTimes(selectedDate).then((blocked) => {
-        setBlockedTimes(blocked);
-        const times = clinic.times || [];
+      fetchBlockedTimes(selectedDate)
+        .then((blocked) => {
+          // Normaliza a resposta do fetch — em alguns casos a API pode retornar
+          // um objeto { error: ... } em vez de um array de strings.
+          const blockedArray: string[] = Array.isArray(blocked) ? blocked : [];
 
-        const finalSlots = times.map((time) => ({
-          time: time,
-          isAvailable: !blocked.includes(time),
-        }));
+          setBlockedTimes(blockedArray);
+          const times = clinic.times || [];
 
-        setAvailableTimeSlots(finalSlots);
+          const finalSlots = times.map((time) => ({
+            time,
+            isAvailable: !blockedArray.includes(time),
+          }));
 
-        const stillAvailable = finalSlots.find(
-          (slot) => slot.time === selectedTime && slot.isAvailable,
-        );
+          setAvailableTimeSlots(finalSlots);
 
-        if (!stillAvailable) setSelectedTime("");
-      });
+          const stillAvailable = finalSlots.find(
+            (slot) => slot.time === selectedTime && slot.isAvailable,
+          );
+
+          if (!stillAvailable) setSelectedTime("");
+        })
+        .catch((err) => {
+          console.error("Error fetching blocked times:", err);
+          // Em caso de erro, expõe todos os horários como disponíveis como fallback
+          const times = clinic.times || [];
+          const finalSlots = times.map((time) => ({ time, isAvailable: true }));
+          setAvailableTimeSlots(finalSlots);
+          setBlockedTimes([]);
+        });
     }
   }, [selectedDate, clinic.times, fetchBlockedTimes, selectedTime]);
 

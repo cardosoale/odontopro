@@ -20,16 +20,42 @@ export async function GET(req: NextRequest) {
 
   try {
     const [year, month, day] = dateParam.split("-").map(Number);
-    const startDate = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
+
+    if (isNaN(year) || isNaN(month) || isNaN(day)) {
+      console.error("Invalid date format:", dateParam);
+      return NextResponse.json(
+        {
+          error: "data inválida",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+
+    // Use UTC to match how appointments are created
+    const startDate = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
     const endDate = new Date(Date.UTC(year, month - 1, day, 23, 59, 59, 999));
 
-    const user = await prisma.user.findFirst({
+    console.log("GET /api/scheduler/get-appointments", {
+      userId,
+      dateParam,
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString(),
+    });
+
+    const user = await prisma.user.findUnique({
       where: {
         id: userId,
+      },
+      select: {
+        id: true,
+        times: true,
       },
     });
 
     if (!user) {
+      console.warn("User not found:", userId);
       return NextResponse.json(
         {
           error: "Nenhum agendamento encontrado",
@@ -53,6 +79,8 @@ export async function GET(req: NextRequest) {
       },
     });
 
+    console.log("Found appointments:", appointments.length);
+
     // Mostrar todos os slots ocupados
     const blockedSlots = new Set<string>();
 
@@ -72,14 +100,22 @@ export async function GET(req: NextRequest) {
 
     const blockedTimes = Array.from(blockedSlots);
 
+    console.log("Blocked times:", blockedTimes);
+
     return NextResponse.json(blockedTimes);
   } catch (err) {
+    console.error("GET /api/scheduler/get-appointments error:", {
+      userId,
+      dateParam,
+      error: err instanceof Error ? err.message : String(err),
+      stack: err instanceof Error ? err.stack : undefined,
+    });
     return NextResponse.json(
       {
         error: "Nenhum agendamento encontrado",
       },
       {
-        status: 400,
+        status: 500,
       },
     );
   }

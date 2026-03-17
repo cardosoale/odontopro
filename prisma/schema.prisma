@@ -28,13 +28,15 @@ model Appointment{
 
   createdAt DateTime @default(now())
   updateAt DateTime @updatedAt
+
+
 }
 
 model Reminder{
    id String @id @default(uuid())
   description String
 
-  userId String 
+  userId String
   user User @relation(fields: [userId], references: [id])
 
   createdAt DateTime @default(now())
@@ -100,10 +102,10 @@ model User {
 
   accounts      Account[]
   sessions      Session[]
- 
+
   @@map("users")
 }
- 
+
 
 
 model Account {
@@ -119,31 +121,31 @@ model Account {
   scope              String?
   id_token           String? @db.Text
   session_state      String?
- 
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
   @@unique([provider, providerAccountId])
   @@map("accounts")
 }
- 
+
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique @map("session_token")
   userId       String   @map("user_id")
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
   @@map("sessions")
 }
 
 
 
- 
+
 model VerificationToken {
   identifier String
   token      String
   expires    DateTime
- 
+
   @@unique([identifier, token])
   @@map("verification_tokens")
 }

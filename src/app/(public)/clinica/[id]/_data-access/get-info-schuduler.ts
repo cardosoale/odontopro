@@ -2,11 +2,15 @@
 
 import prisma from "@/lib/prisma";
 
+/**
+ * Busca informações da clínica para o agendador público.
+ * Usa `findUnique` porque procuramos pelo ID primário (único).
+ */
 export async function getinfoSchuduler({ userId }: { userId: string }) {
-  try {
-    if (!userId) return null;
+  if (!userId) return null;
 
-    const user = await prisma.user.findFirst({
+  try {
+    const user = await prisma.user.findUnique({
       where: {
         id: userId,
       },
@@ -20,10 +24,10 @@ export async function getinfoSchuduler({ userId }: { userId: string }) {
       },
     });
 
-    if (!user) return null;
-
-    return user;
+    return user ?? null;
   } catch (err) {
-    return null;
+    // Log error with contexto para facilitar debugging em dev e re-throw para expor 500 quando apropriado
+    console.error("getinfoSchuduler error for userId:", userId, err);
+    throw err;
   }
 }
