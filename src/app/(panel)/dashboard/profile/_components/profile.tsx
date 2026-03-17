@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { ProfileFormData, useProfileForm } from './profile-form';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ProfileFormData, useProfileForm } from "./profile-form";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -10,17 +10,17 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
-import Image from 'next/image';
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import Image from "next/image";
 import {
   Dialog,
   DialogClose,
@@ -30,19 +30,20 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
-import ImgTest from '@/../public/foto1.png';
-import { ArrowRightIcon, LogOutIcon } from 'lucide-react';
-import { useState } from 'react';
-import { cn } from '@/lib/utils';
-import { updateProfile } from '../_actions/update-profile';
-import { toast } from 'sonner';
-import { formatPhone } from '@/utils/format-phone';
-import { signOut, useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { Prisma } from '@prisma/client';
+import ImgTest from "@/../public/foto1.png";
+import { ArrowRightIcon, LogOutIcon } from "lucide-react";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
+import { updateProfile } from "../_actions/update-profile";
+import { toast } from "sonner";
+import { formatPhone } from "@/utils/format-phone";
+import { signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { Prisma } from "@prisma/client";
+import { AvatarProfile } from "@/app/(panel)/dashboard/profile/_components/avatar-profile";
 
 type UserWithSubscription = Prisma.UserGetPayload<{
   include: {
@@ -68,24 +69,24 @@ export function ProfileContent({ user }: ProfileContentProps) {
     timeZone: user.timeZone,
   });
 
-  const timeZones = Intl.supportedValuesOf('timeZone').filter(
+  const timeZones = Intl.supportedValuesOf("timeZone").filter(
     (zone) =>
-      zone.startsWith('America/Sao_Paulo') ||
-      zone.startsWith('America/Fortaleza') ||
-      zone.startsWith('America/Recife') ||
-      zone.startsWith('America/Bahia') ||
-      zone.startsWith('America/Belem') ||
-      zone.startsWith('America/Manaus') ||
-      zone.startsWith('America/Cuiaba') ||
-      zone.startsWith('America/Boa_Vista'),
+      zone.startsWith("America/Sao_Paulo") ||
+      zone.startsWith("America/Fortaleza") ||
+      zone.startsWith("America/Recife") ||
+      zone.startsWith("America/Bahia") ||
+      zone.startsWith("America/Belem") ||
+      zone.startsWith("America/Manaus") ||
+      zone.startsWith("America/Cuiaba") ||
+      zone.startsWith("America/Boa_Vista"),
   );
 
   function generateTimeSlot(): string[] {
     const hours: string[] = [];
     for (let i = 7; i < 19; i++) {
       for (let j = 0; j < 2; j++) {
-        const min = (j * 30).toString().padStart(2, '0');
-        const hour = i.toString().padStart(2, '0');
+        const min = (j * 30).toString().padStart(2, "0");
+        const hour = i.toString().padStart(2, "0");
         hours.push(`${hour}:${min}`);
       }
     }
@@ -106,7 +107,7 @@ export function ProfileContent({ user }: ProfileContentProps) {
     const response = await updateProfile({
       name: values.name,
       address: values.address,
-      status: values.status === 'active' ? true : false,
+      status: values.status === "active" ? true : false,
       phone: values.phone,
       timeZone: values.timeZone,
       times: selectHours || [],
@@ -116,48 +117,40 @@ export function ProfileContent({ user }: ProfileContentProps) {
       toast.error(response.error);
       return;
     }
-    toast.success('Perfil atualizado com sucesso!');
+    toast.success("Perfil atualizado com sucesso!");
   }
 
   async function handleLogout() {
     await signOut();
     await update();
-    router.replace('/');
+    router.replace("/");
   }
 
   return (
-    <div className='mx-auto'>
+    <div className="mx-auto">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(submit)}>
           <Card>
             <CardHeader>
               <CardTitle>Meu Perfil</CardTitle>
             </CardHeader>
-            <CardContent className='space-y-6'>
-              <div className='flex justify-center'>
-                <div className='bg-gray-200 relative h-40 w-40 rounded-full overflow-hidden'>
-                  <Image
-                    src={user.image ? user.image : ImgTest}
-                    alt='Imagem de teste'
-                    fill
-                    className='object-cover'
-                  />
-                </div>
+            <CardContent className="space-y-6">
+              <div className="flex justify-center">
+                <AvatarProfile avatarUrl={user.image} userId={user.id} />
               </div>
-
-              <div className='space-y-4'>
+              <div className="space-y-4">
                 <FormField
                   control={form.control}
-                  name='name'
+                  name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className='font-semibold'>
+                      <FormLabel className="font-semibold">
                         Nome Completo
                       </FormLabel>
                       <FormControl>
                         <Input
                           {...field}
-                          placeholder='Digite seu nome completo'
+                          placeholder="Digite seu nome completo"
                         />
                       </FormControl>
                       <FormMessage />
@@ -166,19 +159,19 @@ export function ProfileContent({ user }: ProfileContentProps) {
                 />
               </div>
 
-              <div className='space-y-4'>
+              <div className="space-y-4">
                 <FormField
                   control={form.control}
-                  name='address'
+                  name="address"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className='font-semibold'>
+                      <FormLabel className="font-semibold">
                         Endereço Completo
                       </FormLabel>
                       <FormControl>
                         <Input
                           {...field}
-                          placeholder='Digite seu endereço completo'
+                          placeholder="Digite seu endereço completo"
                         />
                       </FormControl>
                       <FormMessage />
@@ -187,17 +180,17 @@ export function ProfileContent({ user }: ProfileContentProps) {
                 />
               </div>
 
-              <div className='space-y-4'>
+              <div className="space-y-4">
                 <FormField
                   control={form.control}
-                  name='phone'
+                  name="phone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className='font-semibold'>Telefone</FormLabel>
+                      <FormLabel className="font-semibold">Telefone</FormLabel>
                       <FormControl>
                         <Input
                           {...field}
-                          placeholder='(99)99999-9999'
+                          placeholder="(99)99999-9999"
                           onChange={(e) => {
                             const formattedValue = formatPhone(e.target.value);
                             field.onChange(formattedValue);
@@ -210,26 +203,26 @@ export function ProfileContent({ user }: ProfileContentProps) {
                 />
               </div>
 
-              <div className='space-y-4'>
+              <div className="space-y-4">
                 <FormField
                   control={form.control}
-                  name='status'
+                  name="status"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className='font-semibold'>Status</FormLabel>
+                      <FormLabel className="font-semibold">Status</FormLabel>
                       <FormControl>
                         <Select
                           onValueChange={field.onChange}
-                          defaultValue={field.value ? 'active' : 'inactive'}
+                          defaultValue={field.value ? "active" : "inactive"}
                         >
-                          <SelectTrigger className='w-full'>
-                            <SelectValue placeholder='Selecione o status' />
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Selecione o status" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value='active'>
+                            <SelectItem value="active">
                               Ativo (Clinica Aberta)
                             </SelectItem>
-                            <SelectItem value='inactive'>
+                            <SelectItem value="inactive">
                               Inativo (Clinica Fechada)
                             </SelectItem>
                           </SelectContent>
@@ -238,19 +231,19 @@ export function ProfileContent({ user }: ProfileContentProps) {
                     </FormItem>
                   )}
                 />
-                <div className='space-y-4'>
-                  <Label className='font-semibold'>
+                <div className="space-y-4">
+                  <Label className="font-semibold">
                     Configurar horários de funcionamento da clínica
                   </Label>
 
                   <Dialog open={dialogIsOpen} onOpenChange={setDialogIsOpen}>
                     <DialogTrigger asChild>
                       <Button
-                        variant={'outline'}
-                        className='w-full justify-between'
+                        variant={"outline"}
+                        className="w-full justify-between"
                       >
                         Clique aqui para selecionar os horários de funcionamento
-                        da clínica <ArrowRightIcon className='w-5 h-5' />
+                        da clínica <ArrowRightIcon className="w-5 h-5" />
                       </Button>
                     </DialogTrigger>
                     <DialogContent>
@@ -261,20 +254,20 @@ export function ProfileContent({ user }: ProfileContentProps) {
                         </DialogDescription>
                       </DialogHeader>
 
-                      <section className='py-4'>
-                        <p className='text-sm text-muted-foreground mb-2'>
+                      <section className="py-4">
+                        <p className="text-sm text-muted-foreground mb-2">
                           Selecione dentre os horários abaixo:
                         </p>
-                        <div className='grid grid-cols-4 gap-2'>
+                        <div className="grid grid-cols-4 gap-2">
                           {hours.map((hour) => (
                             <Button
-                              variant={'outline'}
+                              variant={"outline"}
                               key={hour}
                               onClick={() => toogleHour(hour)}
                               className={cn(
-                                'h-10',
+                                "h-10",
                                 selectHours.includes(hour) &&
-                                  'border-2 border-emerald-500 text-primary',
+                                  "border-2 border-emerald-500 text-primary",
                               )}
                             >
                               {hour}
@@ -283,7 +276,7 @@ export function ProfileContent({ user }: ProfileContentProps) {
                         </div>
                       </section>
                       <Button
-                        className='bg-emerald-500 text-white w-full hover:bg-emerald-400'
+                        className="bg-emerald-500 text-white w-full hover:bg-emerald-400"
                         onClick={() => setDialogIsOpen(false)}
                       >
                         Salvar e Sair
@@ -293,10 +286,10 @@ export function ProfileContent({ user }: ProfileContentProps) {
                 </div>
                 <FormField
                   control={form.control}
-                  name='timeZone'
+                  name="timeZone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className='font-semibold'>
+                      <FormLabel className="font-semibold">
                         Fuso Horário
                       </FormLabel>
                       <FormControl>
@@ -304,8 +297,8 @@ export function ProfileContent({ user }: ProfileContentProps) {
                           onValueChange={field.onChange}
                           defaultValue={field.value}
                         >
-                          <SelectTrigger className='w-full'>
-                            <SelectValue placeholder='Selecione seu fuso horário' />
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Selecione seu fuso horário" />
                           </SelectTrigger>
                           <SelectContent>
                             {timeZones.map((zone) => (
@@ -320,8 +313,8 @@ export function ProfileContent({ user }: ProfileContentProps) {
                   )}
                 />
                 <Button
-                  className='w-full bg-emerald-500 hover:bg-emerald-400'
-                  type='submit'
+                  className="w-full bg-emerald-500 hover:bg-emerald-400"
+                  type="submit"
                 >
                   Salvar alterações
                 </Button>
@@ -330,10 +323,10 @@ export function ProfileContent({ user }: ProfileContentProps) {
           </Card>
         </form>
       </Form>
-      <section className='mt-4'>
-        <Button onClick={handleLogout} variant={'destructive'}>
+      <section className="mt-4">
+        <Button onClick={handleLogout} variant={"destructive"}>
           LogOut
-          <LogOutIcon className='w-5 h-5 ml-2' />
+          <LogOutIcon className="w-5 h-5 ml-2" />
         </Button>
       </section>
     </div>
