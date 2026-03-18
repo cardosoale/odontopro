@@ -1,63 +1,72 @@
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import Image from 'next/image';
-import fotoImg from '../../../../public/foto1.png';
-import { Button } from '@/components/ui/button';
-import { ArrowRightIcon } from 'lucide-react';
+import Image from "next/image";
+import fotoImg from "../../../../public/foto1.png";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { Prisma } from "@prisma/client";
+import { PremiumCardBadge } from "./premium-badge";
 
-import { User } from '@prisma/client';
-import Link from 'next/link';
+type UserWithSubscription = Prisma.UserGetPayload<{
+  include: {
+    subscription: true;
+  };
+}>;
 
 interface ProfessionalsProps {
-  professionals: User[];
+  professionals: UserWithSubscription[];
 }
 
 export function Professionals({ professionals }: ProfessionalsProps) {
   return (
-    <section className='bg-gray-50 py-16'>
-      <div className='container mx-auto px-4 sm:px-6 lg:px-8'>
-        <h2 className='text-3xl text-center mb-12 font-bold'>
-          Clinicas Disponíveis
+    <section className="bg-gray-50 py-16">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 className="text-3xl text-center mb-12 font-bold">
+          Clinicas disponíveis
         </h2>
 
-        <section className='grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
+        <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {professionals.map((clinic) => (
-            <Card
-              className='overflow-hidden hover:shadow-lg duration-300'
+            <div
+              className="rounded-xl border bg-card text-card-foreground shadow-sm overflow-hidden hover:shadow-lg duration-300 flex flex-col h-full"
               key={clinic.id}
             >
-              <CardHeader>
-                <CardTitle>{clinic.name}</CardTitle>
-                <CardDescription>
-                  {clinic.address || 'Endereço não informado'}
-                </CardDescription>
-                <CardAction className='w-2.5 h-2.5 rounded-full bg-emerald-500'></CardAction>
-              </CardHeader>
-              <CardContent className='relative h-48'>
+              {/* Imagem no topo sem margem */}
+              <div className="relative h-48 w-full shrink-0">
                 <Image
                   src={clinic.image ?? fotoImg}
-                  alt='Foto da clinica'
+                  alt="Foto da clinica"
                   fill
-                  className='object-contain'
+                  className="object-cover"
                 />
-              </CardContent>
-              <CardFooter className='p-4'>
+
+                {/* Badge Premium */}
+                {clinic?.subscription?.status === "active" &&
+                  clinic?.subscription?.plan === "PROFESSIONAL" && (
+                    <PremiumCardBadge />
+                  )}
+              </div>
+
+              {/* Informações */}
+              <div className="px-6 py-4 space-y-2 flex-1 flex flex-col">
+                <h3 className="font-semibold text-base leading-none">
+                  {clinic.name}
+                </h3>
+                <p className="text-sm text-muted-foreground line-clamp-3">
+                  {clinic.address ?? "Endereço não informado."}
+                </p>
+              </div>
+
+              {/* Botão sempre no final */}
+              <div className="px-6 py-4 shrink-0">
                 <Link
                   href={`/clinica/${clinic.id}`}
-                  target='_blank'
-                  className='w-full bg-emerald-500 hover:bg-emerald-400 text-white flex items-center justify-center py-2 rounded-md text-sm md:text-base font-medium'
+                  target="_blank"
+                  className="w-full bg-emerald-500 hover:bg-emerald-400 text-white flex items-center justify-center py-2 rounded-md text-sm md:text-base font-medium transition-colors"
                 >
-                  Agendar horário <ArrowRightIcon className='ml-2' />
+                  Agendar horário
+                  <ArrowRight className="ml-2 w-4 h-4" />
                 </Link>
-              </CardFooter>
-            </Card>
+              </div>
+            </div>
           ))}
         </section>
       </div>
