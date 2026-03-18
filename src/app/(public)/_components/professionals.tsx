@@ -1,7 +1,7 @@
 import Image from "next/image";
 import fotoImg from "../../../../public/foto1.png";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRightIcon } from "lucide-react";
 import { Prisma } from "@prisma/client";
 import { PremiumCardBadge } from "./premium-badge";
 
@@ -63,7 +63,7 @@ export function Professionals({ professionals }: ProfessionalsProps) {
                   className="w-full bg-emerald-500 hover:bg-emerald-400 text-white flex items-center justify-center py-2 rounded-md text-sm md:text-base font-medium transition-colors"
                 >
                   Agendar horário
-                  <ArrowRight className="ml-2 w-4 h-4" />
+                  <ArrowRightIcon className="ml-2 w-4 h-4" />
                 </Link>
               </div>
             </div>
